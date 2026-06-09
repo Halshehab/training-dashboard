@@ -126,7 +126,7 @@
                         </tr>
                     </thead>
                     <tbody id="data-table-rows" class="divide-y divide-slate-100 text-sm">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -134,10 +134,10 @@
     </main>
 
     <script>
-        // هذا هو الموضع المستهدف حيث يقوم خادم الأتمتة بحقن البيانات هنا بدلاً من الكلمة المحجوزة
+        // موضع حقن البيانات عبر سير عمل الأتمتة
         const trainingData = __DATA_PLACEHOLDER__;
 
-        // دالة المساعدة لتنسيق العملات والأرقام المالية بدقة وحفظ الكسور العشرية (.00)
+        // دالة تنسيق العملات والأرقام المالية بدقة وحفظ الكسور العشرية (.00)
         function formatCurrency(value) {
             return new Intl.NumberFormat('en-US', {
                 minimumFractionDigits: 2,
@@ -145,9 +145,11 @@
             }).format(value);
         }
 
-        // تعبئة قائمة فلاتر "المسارات التدريبية" ديناميكياً من البيانات الفعلية المتاحة
+        // تعبئة قائمة فلاتر "المسارات التدريبية" ديناميكياً
         function populatePathFilter() {
             const pathSelect = document.getElementById('filter-path');
+            if (!pathSelect || !Array.isArray(trainingData)) return;
+            
             const paths = [...new Set(trainingData.map(item => item.path))].filter(Boolean);
             
             paths.forEach(path => {
@@ -158,12 +160,13 @@
             });
         }
 
-        // الدالة الرئيسية لحساب المؤشرات وإعادة بناء الجدول بناءً على الفلاتر النشطة
+        // الدالة الرئيسية لحساب المؤشرات وإعادة بناء الجدول
         function renderDashboard() {
             const quarterFilter = document.getElementById('filter-quarter').value;
             const pathFilter = document.getElementById('filter-path').value;
             const typeFilter = document.getElementById('filter-type').value;
-            const searchQuery = document.getElementById('search-name').value.toLowerCase().strip();
+            // إصلاح الخطأ هنا: تم تغيير .strip() إلى .trim()
+            const searchQuery = document.getElementById('search-name').value.toLowerCase().trim();
 
             const tbody = document.getElementById('data-table-rows');
             tbody.innerHTML = '';
@@ -173,48 +176,48 @@
             let totalProgCost = 0.0;
             let totalGrandCost = 0.0;
 
-            // فلترة المصفوفة
+            // فلترة المصفوفة بأمان
             const filteredData = trainingData.filter(item => {
                 const matchQuarter = (quarterFilter === 'all' || item.quarter === quarterFilter);
                 const matchPath = (pathFilter === 'all' || item.path === pathFilter);
-                const matchType = (typeFilter === 'all' || item.type.includes(typeFilter));
-                const matchSearch = (!searchQuery || item.name.toLowerCase().includes(searchQuery));
+                const matchType = (typeFilter === 'all' || (item.type && item.type.includes(typeFilter)));
+                const matchSearch = (!searchQuery || (item.name && String(item.name).toLowerCase().includes(searchQuery)));
                 return matchQuarter && matchPath && matchType && matchSearch;
             });
 
             // معالجة البيانات وبناء الصفوف داخل الجدول
             filteredData.forEach(item => {
                 totalPrograms++;
-                totalTrainees += item.target_count;
-                totalProgCost += item.program_cost;
-                totalGrandCost += item.grand_total;
+                totalTrainees += Number(item.target_count || 0);
+                totalProgCost += Number(item.program_cost || 0);
+                totalGrandCost += Number(item.grand_total || 0);
 
                 const row = document.createElement('tr');
                 row.className = 'hover:bg-slate-50/80 transition-colors';
                 row.innerHTML = `
                     <td class="p-4">
-                        <div class="font-bold text-slate-900">${item.name}</div>
-                        <div class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot ml-1"></i>${item.location} | ${item.type}</div>
+                        <div class="font-bold text-slate-900">${item.name || ''}</div>
+                        <div class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot ml-1"></i>${item.location || ''} | ${item.type || ''}</div>
                     </td>
                     <td class="p-4">
-                        <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium">${item.path}</span>
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium">${item.path || ''}</span>
                     </td>
                     <td class="p-4 text-xs font-mono text-slate-600">
-                        <div>${item.date}</div>
-                        <div class="text-indigo-500 font-bold mt-0.5">${item.quarter}</div>
+                        <div>${item.date || ''}</div>
+                        <div class="text-indigo-500 font-bold mt-0.5">${item.quarter || ''}</div>
                     </td>
                     <td class="p-4 text-xs text-slate-600">
-                        <div>${item.duration} أيام</div>
-                        <div class="text-slate-400 mt-0.5">${item.entity}</div>
+                        <div>${item.duration || 0} أيام</div>
+                        <div class="text-slate-400 mt-0.5">${item.entity || ''}</div>
                     </td>
-                    <td class="p-4 text-center font-bold text-slate-700">${item.target_count}</td>
-                    <td class="p-4 text-left font-mono font-medium text-slate-600">${formatCurrency(item.program_cost)}</td>
-                    <td class="p-4 text-left font-mono font-bold text-indigo-600">${formatCurrency(item.grand_total)}</td>
+                    <td class="p-4 text-center font-bold text-slate-700">${item.target_count || 0}</td>
+                    <td class="p-4 text-left font-mono font-medium text-slate-600">${formatCurrency(item.program_cost || 0)}</td>
+                    <td class="p-4 text-left font-mono font-bold text-indigo-600">${formatCurrency(item.grand_total || 0)}</td>
                 `;
                 tbody.appendChild(row);
             });
 
-            // تحديث بطاقات المؤشرات العلوية مع الحفاظ على الدقة
+            // تحديث بطاقات المؤشرات العلوية مع الحفاظ على الدقة العشرية
             document.getElementById('stat-total-programs').textContent = totalPrograms;
             document.getElementById('stat-total-trainees').textContent = new Intl.NumberFormat('en-US').format(totalTrainees);
             document.getElementById('stat-program-cost').innerHTML = `${formatCurrency(totalProgCost)} <span class="text-xs text-slate-400">ريال</span>`;
