@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>__DASHBOARD_TITLE__</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Tajawal', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white shadow-md p-6 mb-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl font-black tracking-wide">تقويم البرامج التدريبية ولوحة المؤشرات</h1>
+                <p class="text-slate-300 text-sm mt-1">نظام الأتمتة المطور وقراءة الميزانيات التشاركية سحابياً</p>
+            </div>
+            <div class="bg-white/10 px-4 py-2 rounded-lg text-xs backdrop-blur-sm">
+                <i class="fa-solid fa-rotate text-emerald-400 animate-spin ml-2"></i>
+                تحديث تلقائي عبر منصة GitHub Actions
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 pb-12">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 font-medium">إجمالي البرامج المستهدفة</p>
+                    <h3 id="stat-total-programs" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 font-medium">إجمالي المستهدفين (متدرب)</p>
+                    <h3 id="stat-total-trainees" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 font-medium">تكلفة تنفيذ البرامج</p>
+                    <h3 id="stat-program-cost" class="text-2xl font-bold text-slate-900 mt-1">0.00 <span class="text-xs text-slate-400">ريال</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-wallet"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 font-medium">الميزانية الإجمالية (مع الانتدابات)</p>
+                    <h3 id="stat-grand-total" class="text-2xl font-bold text-indigo-900 mt-1">0.00 <span class="text-xs text-slate-400">ريال</span></h3>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
+            <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-filter text-indigo-600"></i> تصفية وتحديد البيانات المعروضة
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">الربع السنوي</label>
+                    <select id="filter-quarter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                        <option value="all">كل الأرباع</option>
+                        <option value="Q1">الربع الأول (Q1)</option>
+                        <option value="Q2">الربع الثاني (Q2)</option>
+                        <option value="Q3">الربع الثالث (Q3)</option>
+                        <option value="Q4">الربع الرابع (Q4)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">المسار التدريبي</label>
+                    <select id="filter-path" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                        <option value="all">كل المسارات</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">طريقة التنفيذ</label>
+                    <select id="filter-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                        <option value="all">الكل (حضوري / عن بعد)</option>
+                        <option value="حضوري">حضوري</option>
+                        <option value="عن بعد">عن بعد</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">بحث باسم البرنامج</label>
+                    <input type="text" id="search-name" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h2 class="font-bold text-slate-800 text-base">جدول البرامج المدرجة بالخطة</h2>
+                <span id="counter-label" class="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">معاينة: 0 برنامج</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
+                            <th class="p-4">اسم البرنامج</th>
+                            <th class="p-4">المسار</th>
+                            <th class="p-4">تاريخ التنفيذ</th>
+                            <th class="p-4">المدة / الفئة</th>
+                            <th class="p-4 text-center">المستهدفين</th>
+                            <th class="p-4 text-left">تكلفة البرنامج</th>
+                            <th class="p-4 text-left">التكلفة الإجمالية</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-rows" class="divide-y divide-slate-100 text-sm">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // هذا هو الموضع المستهدف حيث يقوم خادم الأتمتة بحقن البيانات هنا بدلاً من الكلمة المحجوزة
+        const trainingData = __DATA_PLACEHOLDER__;
+
+        // دالة المساعدة لتنسيق العملات والأرقام المالية بدقة وحفظ الكسور العشرية (.00)
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        // تعبئة قائمة فلاتر "المسارات التدريبية" ديناميكياً من البيانات الفعلية المتاحة
+        function populatePathFilter() {
+            const pathSelect = document.getElementById('filter-path');
+            const paths = [...new Set(trainingData.map(item => item.path))].filter(Boolean);
+            
+            paths.forEach(path => {
+                const option = document.createElement('option');
+                option.value = path;
+                option.textContent = path;
+                pathSelect.appendChild(option);
+            });
+        }
+
+        // الدالة الرئيسية لحساب المؤشرات وإعادة بناء الجدول بناءً على الفلاتر النشطة
+        function renderDashboard() {
+            const quarterFilter = document.getElementById('filter-quarter').value;
+            const pathFilter = document.getElementById('filter-path').value;
+            const typeFilter = document.getElementById('filter-type').value;
+            const searchQuery = document.getElementById('search-name').value.toLowerCase().strip();
+
+            const tbody = document.getElementById('data-table-rows');
+            tbody.innerHTML = '';
+
+            let totalPrograms = 0;
+            let totalTrainees = 0;
+            let totalProgCost = 0.0;
+            let totalGrandCost = 0.0;
+
+            // فلترة المصفوفة
+            const filteredData = trainingData.filter(item => {
+                const matchQuarter = (quarterFilter === 'all' || item.quarter === quarterFilter);
+                const matchPath = (pathFilter === 'all' || item.path === pathFilter);
+                const matchType = (typeFilter === 'all' || item.type.includes(typeFilter));
+                const matchSearch = (!searchQuery || item.name.toLowerCase().includes(searchQuery));
+                return matchQuarter && matchPath && matchType && matchSearch;
+            });
+
+            // معالجة البيانات وبناء الصفوف داخل الجدول
+            filteredData.forEach(item => {
+                totalPrograms++;
+                totalTrainees += item.target_count;
+                totalProgCost += item.program_cost;
+                totalGrandCost += item.grand_total;
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-slate-50/80 transition-colors';
+                row.innerHTML = `
+                    <td class="p-4">
+                        <div class="font-bold text-slate-900">${item.name}</div>
+                        <div class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot ml-1"></i>${item.location} | ${item.type}</div>
+                    </td>
+                    <td class="p-4">
+                        <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium">${item.path}</span>
+                    </td>
+                    <td class="p-4 text-xs font-mono text-slate-600">
+                        <div>${item.date}</div>
+                        <div class="text-indigo-500 font-bold mt-0.5">${item.quarter}</div>
+                    </td>
+                    <td class="p-4 text-xs text-slate-600">
+                        <div>${item.duration} أيام</div>
+                        <div class="text-slate-400 mt-0.5">${item.entity}</div>
+                    </td>
+                    <td class="p-4 text-center font-bold text-slate-700">${item.target_count}</td>
+                    <td class="p-4 text-left font-mono font-medium text-slate-600">${formatCurrency(item.program_cost)}</td>
+                    <td class="p-4 text-left font-mono font-bold text-indigo-600">${formatCurrency(item.grand_total)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // تحديث بطاقات المؤشرات العلوية مع الحفاظ على الدقة
+            document.getElementById('stat-total-programs').textContent = totalPrograms;
+            document.getElementById('stat-total-trainees').textContent = new Intl.NumberFormat('en-US').format(totalTrainees);
+            document.getElementById('stat-program-cost').innerHTML = `${formatCurrency(totalProgCost)} <span class="text-xs text-slate-400">ريال</span>`;
+            document.getElementById('stat-grand-total').innerHTML = `${formatCurrency(totalGrandCost)} <span class="text-xs text-slate-400">ريال</span>`;
+            
+            // تحديث عداد المعاينة الحالي
+            document.getElementById('counter-label').textContent = `معاينة: ${totalPrograms} برنامج`;
+        }
+
+        // مستمعو الأحداث (Event Listeners) لإعادة الحساب فور تغيير أي فلتر
+        document.getElementById('filter-quarter').addEventListener('change', renderDashboard);
+        document.getElementById('filter-path').addEventListener('change', renderDashboard);
+        document.getElementById('filter-type').addEventListener('change', renderDashboard);
+        document.getElementById('search-name').addEventListener('input', renderDashboard);
+
+        // تشغيل التهيئة الأولية عند تحميل الصفحة بالكامل
+        window.addEventListener('DOMContentLoaded', () => {
+            populatePathFilter();
+            renderDashboard();
+        });
+    </script>
+</body>
+</html>
