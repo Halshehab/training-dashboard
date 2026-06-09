@@ -5,7 +5,6 @@ on:
     - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات
   workflow_dispatch: # تشغيل يدوياً بضغطة زر
 
-# 🔑 وضعنا الصلاحيات هنا على مستوى الملف بالكامل لإجبار السيرفر على منح إذن الكتابة
 permissions:
   contents: write
   pages: write
@@ -34,11 +33,14 @@ jobs:
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
         
-        # سحب آخر التغييرات منعاً للتعارض
-        git pull origin main --rebase
-        
-        # إضافة وتحديث الملف
+        # 1. إضافة الملف المحدث أولاً للاحتفاظ بالتغييرات
         git add index.html
         
-        # تنفيذ الحفظ والدفع إذا وجد تغيير في المحتوى
-        git diff-index --quiet HEAD || (git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية" && git push)
+        # 2. عمل الحفظ المحلي (Commit) لتهيئة التعديل للرفع
+        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية"
+        
+        # 3. سحب أي تحديثات خارجية مع دمجها بذكاء وسلاسة (Strategy Ours) لفرض التعديل الجديد
+        git pull origin main -X ours --allow-unrelated-histories --rebase=false || true
+        
+        # 4. الدفع النهائي إلى المستودع لتحديث اللوحة
+        git push origin main
