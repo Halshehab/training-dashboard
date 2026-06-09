@@ -795,7 +795,7 @@ def generate_interactive_calendar():
         f.write(final_html)
         
     print(f"\n✨ تم تحديث الملف وحقن البيانات بنجاح   !")
-    print(df.columns.tolist())
+    print(df[['Target_Count']].head(20))
 
 if __name__ == "__main__":
     generate_interactive_calendar()
