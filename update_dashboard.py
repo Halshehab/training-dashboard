@@ -703,7 +703,7 @@ def generate_interactive_calendar():
             document.getElementById('title-travel').innerText = useReps ? "تكاليف الانتداب والإركاب (بالتكرار)" : "تكاليف الانتداب والإركاب التقديري";
             document.getElementById('title-grand').innerText = useReps ? "المجموع الكلي للميزانيات (بالتكرار)" : "المجموع الكلي التقديري للميزانيات";
 
-            kpiPrograms.innerText = totalPrograms;
+            kpiPrograms.innerText = totalPrograms.toLocaleString('ar-SA');
             kpiTargets.innerText = totalTargets.toLocaleString('ar-SA');
             kpiCost.innerText = totalCost.toLocaleString('ar-SA') + ' ⃁';
             kpiTravel.innerText = totalTravel.toLocaleString('ar-SA') + ' ⃁';
