@@ -5,14 +5,14 @@ on:
     - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات
   workflow_dispatch: # تشغيل يدوياً بضغطة زر
 
+# 🔑 وضعنا الصلاحيات هنا على مستوى الملف بالكامل لإجبار السيرفر على منح إذن الكتابة
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    
-    # 🔑 هنا السطرين السحريين لإجبار المنصة على تفعيل الـ GITHUB_TOKEN بصلاحية الكتابة
-    permissions:
-      contents: write
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -33,6 +33,12 @@ jobs:
       run: |
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
+        
+        # سحب آخر التغييرات منعاً للتعارض
+        git pull origin main --rebase
+        
+        # إضافة وتحديث الملف
         git add index.html
-        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية"
-        git push
+        
+        # تنفيذ الحفظ والدفع إذا وجد تغيير في المحتوى
+        git diff-index --quiet HEAD || (git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية" && git push)
