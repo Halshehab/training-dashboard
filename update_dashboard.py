@@ -473,7 +473,7 @@ def generate_interactive_calendar():
     <div id="login-overlay">
         <div class="login-card">
             <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%88%D9%82%D8%A7%D8%A1?unique=457fbf0" onerror="this.style.display='none';">
-            <h2>بوابة الدخول الموحدة</h2>
+            <h2>بوابة الدخول للتنفيذيين</h2>
             <p>لوحة مؤشرات خطة البرامج التدريبية والميزانيات</p>
             
             <div class="login-field">
@@ -498,7 +498,7 @@ def generate_interactive_calendar():
                 <p>الخطة الشاملة للمسارات التدريبية وفق وثيقة التدريب</p>
             </div>
             <div class="logo-area">
-                <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%8...?" alt="شعار المركز" onerror="this.style.display='none';">
+                <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%88%D9%82%D8%A7%D8%A1?unique=457fbf0">
             </div>
         </div>
 
