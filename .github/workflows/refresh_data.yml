@@ -2,12 +2,17 @@ name: Refresh Dashboard Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات لسحب أي تعديلات من الإكسيل
-  workflow_dispatch: # يتيح لك خيار تشغيل التحديث يدوياً بضغطة زر فورية
+    - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات
+  workflow_dispatch: # تشغيل يدوياً بضغطة زر
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    
+    # 🔑 هنا السطرين السحريين لإجبار المنصة على تفعيل الـ GITHUB_TOKEN بصلاحية الكتابة
+    permissions:
+      contents: write
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -29,5 +34,5 @@ jobs:
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
         git add index.html
-        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية "
+        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية"
         git push
