@@ -1,0 +1,33 @@
+name: Refresh Dashboard Data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات لسحب أي تعديلات من الإكسيل
+  workflow_dispatch: # يتيح لك خيار تشغيل التحديث يدوياً بضغطة زر فورية
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        pip install pandas openpyxl requests
+
+    - name: Run Update Script
+      run: python update_dashboard.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        git add index.html
+        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية"
+        git push
