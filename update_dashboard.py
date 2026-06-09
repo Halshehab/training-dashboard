@@ -4,7 +4,7 @@ import pandas as pd
 
 def generate_interactive_calendar():
     # 🔗 ضع هنا رابط التحميل المباشر لملف الإكسيل التشاركي (OneDrive أو Google Drive)
-    excel_url = "https://docs.google.com/spreadsheets/d/1_nm_fLhSDVNRnWgn-t7onJpabfbGenAX/edit?usp=sharing&ouid=106958063699469249668&rtpof=true&sd=true" 
+    excel_url = "https://docs.google.com/spreadsheets/d/1_nm_fLhSDVNRnWgn-t7onJpabfbGenAX/export?format=xlsx" 
     sheet_name = "تقويم التدريب"
     
     print(f"🔄 جاري سحب وقراءة البيانات من المجلد التشاركي...")
