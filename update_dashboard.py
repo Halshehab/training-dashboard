@@ -5,7 +5,7 @@ import requests
 from io import BytesIO
 
 def generate_interactive_calendar():
-    # رابط جوجل شيت المباشر بصيغة إكسيل الذي زودتني به
+    # رابط جوجل شيت المباشر بصيغة إكسيل
     google_sheet_url = "https://docs.google.com/spreadsheets/d/1_nm_fLhSDVNRnWgn-t7onJpabfbGenAX/export?format=xlsx"
     sheet_name = "تقويم التدريب"
     
@@ -115,7 +115,7 @@ def generate_interactive_calendar():
 
     programs_json = json.dumps(programs_list, ensure_ascii=False, indent=4)
 
-    # قالب واجهة الـ HTML المعتمد من طرفكم
+    # قالب واجهة الـ HTML المعتمد مع إضافة شريط البحث وزر التصدير
     html_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -123,6 +123,7 @@ def generate_interactive_calendar():
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>__DASHBOARD_TITLE__</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         :root {
             --brand-dark-green: #1d4229;
@@ -213,7 +214,7 @@ def generate_interactive_calendar():
             margin-bottom: 6px; 
             color: #ffffff; 
         }
-        .filter-group select {
+        .filter-group select, .filter-group input {
             width: 100%;
             padding: 10px 14px;
             border-radius: 8px;
@@ -225,16 +226,27 @@ def generate_interactive_calendar():
             outline: none;
             transition: all 0.2s;
         }
+        .filter-group input::placeholder {
+            color: #a0aec0;
+            font-weight: normal;
+        }
 
-        .toggle-container {
+        .action-row-container {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 15px;
             background-color: var(--card-bg);
             padding: 12px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             border: 1px solid var(--border-color);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
         }
         .toggle-label {
             font-size: 14px;
@@ -268,6 +280,24 @@ def generate_interactive_calendar():
         }
         input:checked + .slider { background-color: var(--brand-gold); }
         input:checked + .slider:before { transform: translateX(-30px); }
+
+        .btn-export-excel {
+            background-color: var(--brand-gold);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s;
+        }
+        .btn-export-excel:hover {
+            background-color: #927125;
+        }
 
         .stats-grid {
             display: grid;
@@ -378,7 +408,7 @@ def generate_interactive_calendar():
             <p>الخطة الشاملة للمسارات التدريبية وفق وثيقة التدريب</p>
         </div>
         <div class="logo-area">
-            <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%88%D9%82%D8%A7%D8%A1?unique=457fbf0" alt="شعار المركز" onerror="this.style.display='none';">
+            <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%8...?" alt="شعار المركز" onerror="this.style.display='none';">
         </div>
     </div>
 
@@ -411,14 +441,23 @@ def generate_interactive_calendar():
                 <label for="filter-type">⚙️ طريقة التنفيذ:</label>
                 <select id="filter-type" onchange="applyFilters()"></select>
             </div>
+            <div class="filter-group">
+                <label for="search-program">🔍 بحث سريع باسم البرنامج:</label>
+                <input type="text" id="search-program" oninput="applyFilters()" placeholder="اكتب اسم البرنامج للبحث فورا...">
+            </div>
         </div>
 
-        <div class="toggle-container">
-            <label class="switch">
-                <input type="checkbox" id="toggle-reps" onchange="applyFilters()">
-                <span class="slider"></span>
-            </label>
-            <span class="toggle-label">     🔄 تفعيل احتساب المؤشرات بالتكرار </span>
+        <div class="action-row-container">
+            <div class="toggle-container">
+                <label class="switch">
+                    <input type="checkbox" id="toggle-reps" onchange="applyFilters()">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label">     🔄 تفعيل احتساب المؤشرات بالتكرار </span>
+            </div>
+            <button class="btn-export-excel" onclick="exportToExcel()">
+                📥 تصدير البيانات الحالية إلى Excel
+            </button>
         </div>
     </div>
 
@@ -474,6 +513,7 @@ def generate_interactive_calendar():
         const trainingData = __DATA_PLACEHOLDER__;
         const pathColorsMap = {};
         const baseColors = ['#1d4229', '#29693b', '#b08932', '#420a70', '#4a4b4d', '#00a85a', '#cfa13a', '#5c1699'];
+        let dynamicFilteredData = []; // متغير عالمي للاحتفاظ بالبيانات المفلترة لغرض التصدير
 
         function initApp() {
             const pathSelect = document.getElementById('filter-path');
@@ -499,20 +539,22 @@ def generate_interactive_calendar():
             const quarterFilter = document.getElementById('filter-quarter').value;
             const pathFilter = document.getElementById('filter-path').value;
             const typeFilter = document.getElementById('filter-type').value;
+            const searchQuery = document.getElementById('search-program').value.trim().toLowerCase();
 
-            const filteredData = trainingData.filter(item => {
+            dynamicFilteredData = trainingData.filter(item => {
                 const matchYear = (yearFilter === 'all' || item.year.toString() === yearFilter);
                 const matchQuarter = (quarterFilter === 'all' || item.quarter === quarterFilter);
                 const matchPath = (pathFilter === 'all' || item.path === pathFilter);
                 const matchType = (typeFilter === 'all' || item.type === typeFilter);
-                return matchYear && matchQuarter && matchPath && matchType;
+                const matchSearch = (searchQuery === '' || item.name.toLowerCase().includes(searchQuery));
+                return matchYear && matchQuarter && matchPath && matchType && matchSearch;
             });
 
             const isRepeatedMode = document.getElementById('toggle-reps').checked;
 
-            updateKPIs(filteredData, isRepeatedMode);
-            renderGanttChart(filteredData);
-            renderReportTable(filteredData, isRepeatedMode);
+            updateKPIs(dynamicFilteredData, isRepeatedMode);
+            renderGanttChart(dynamicFilteredData);
+            renderReportTable(dynamicFilteredData, isRepeatedMode);
         }
 
         function updateKPIs(data, useReps) {
@@ -614,6 +656,52 @@ def generate_interactive_calendar():
                     '</tr>';
             });
             tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">لا توجد بيانات متاحة للعرض حالياً</td></tr>';
+        }
+
+        // دالة تصدير البيانات التفاعلية الحالية والذكية إلى ملف Excel ممتاز
+        function exportToExcel() {
+            if (dynamicFilteredData.length === 0) {
+                alert("لا توجد بيانات متاحة للتصدير حالياً بناءً على تصفيتك.");
+                return;
+            }
+            
+            const isRepeatedMode = document.getElementById('toggle-reps').checked;
+            
+            // إعادة ترتيب البيانات وهيكلتها لتناسب المظهر المهني لملفات الإكسيل
+            const excelRows = dynamicFilteredData.map(item => {
+                const multiplier = isRepeatedMode ? item.repetitions : 1;
+                return {
+                    "اسم البرنامج التدريبي": item.name,
+                    "المسار التدريبي": item.path,
+                    "تاريخ التنفيذ المستهدف": item.date,
+                    "الربع السنوي": item.quarter,
+                    "المدة (أيام)": item.duration,
+                    "الموقع": item.location,
+                    "طريقة التنفيذ": item.type,
+                    "الفئة المستهدفة": item.entity,
+                    "عدد المتدربين المستهدف": item.target_count,
+                    "عدد التكرارات المعتمدة": item.repetitions,
+                    "تكلفة التنفيذ (ريال)": item.program_cost * multiplier,
+                    "تكلفة الإركاب والانتداب (ريال)": item.travel_cost * multiplier,
+                    "المجموع الكلي للميزانية (ريال)": item.grand_total * multiplier
+                };
+            });
+            
+            // إنشاء الشيت والكتاب المخصص
+            const worksheet = XLSX.utils.json_to_sheet(excelRows, { header: Object.keys(excelRows[0]) });
+            const workbook = XLSX.utils.book_new();
+            
+            // تفعيل الاتجاه من اليمين لليسار في ملف Excel المصدر
+            if(!worksheet['!views']) worksheet['!views'] = [{}];
+            worksheet['!views'][0]['RTL'] = true;
+            
+            XLSX.utils.book_append_sheet(workbook, worksheet, "البرامج المفلترة");
+            
+            // اسم الملف المصدر بشكل حيوي وواضح
+            const modeText = isRepeatedMode ? "_بالتكرار" : "_أساسي";
+            const fileName = `تقرير_الخطة_التدريبية${modeText}.xlsx`;
+            
+            XLSX.writeFile(workbook, fileName);
         }
 
         window.onload = initApp;
