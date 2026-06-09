@@ -786,11 +786,15 @@ def generate_interactive_calendar():
 </html>
 """
 
-    dashboard_title = "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
+dashboard_title = "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
     final_html = html_template.replace("__DATA_PLACEHOLDER__", programs_json)
     final_html = final_html.replace("__DASHBOARD_TITLE__", dashboard_title)
 
-    # حفظ السجل  باسم index.html ليعمل على خوادم الـ Pages مباشرة
     output_filename = "index.html"
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(final_html)
+        
+    print(f"\n✨ تم تحديث الملف وحقن البيانات بنجاح   !")
+
+if __name__ == "__main__":
+    generate_interactive_calendar()
