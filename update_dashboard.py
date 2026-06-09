@@ -132,6 +132,7 @@ def generate_interactive_calendar():
             --brand-yellow: #f4d153;
             --brand-charcoal: #4a4b4d;
             --brand-purple: #420a70;
+            --brand-blue: #2b5c8f;
             
             --bg-primary: #f4f7f5;
             --text-main: #2b302c;
@@ -367,10 +368,11 @@ def generate_interactive_calendar():
         input:checked + .slider { background-color: var(--brand-gold); }
         input:checked + .slider:before { transform: translateX(-30px); }
 
+        /* تعديل شبكة البطاقات الإحصائية لتستوعب 5 أعمدة بشكل مرن */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             margin-bottom: 25px;
         }
         .stat-card {
@@ -553,6 +555,10 @@ def generate_interactive_calendar():
                 <h3 id="title-programs">إجمالي البرامج المدرجة</h3>
                 <div class="value" id="total-programs-kpi">0</div>
             </div>
+            <div class="stat-card" style="border-right-color: var(--brand-blue);">
+                <h3 id="title-targets">إجمالي المتدربين المستهدفين</h3>
+                <div class="value" id="total-targets-kpi">0</div>
+            </div>
             <div class="stat-card" style="border-right-color: var(--brand-gold);">
                 <h3 id="title-cost">إجمالي ميزانية التنفيذ (البرنامج)</h3>
                 <div class="value" id="total-cost-kpi">0 ⃁</div>
@@ -584,7 +590,7 @@ def generate_interactive_calendar():
                                 <th>اسم البرنامج التدريبي</th>
                                 <th>تاريخ البدء</th>
                                 <th>المسار التدريبي</th>
-                                <th>المدة / الموقع</th>
+                                <th>المدة / الموقع / السعة</th>
                                 <th>تكلفة التنفيذ (البرنامج)</th>
                                 <th>الإركاب والانتداب</th>
                                 <th>المجموع الكلي</th>
@@ -598,7 +604,7 @@ def generate_interactive_calendar():
     </div>
 
     <script>
-        // بيانات تسجيل الدخول الافتراضية - يمكنك تعديلها بحرية من هنا
+        // بيانات تسجيل الدخول الافتراضية
         const AUTH_CONFIG = {
             username: "admin",
             password: "weqaa2026"
@@ -615,7 +621,6 @@ def generate_interactive_calendar():
             const errorDiv = document.getElementById('login-error');
 
             if (userInp === AUTH_CONFIG.username && passInp === AUTH_CONFIG.password) {
-                // إخفاء بوابة الدخول وإظهار اللوحة التفاعلية بالكامل
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('main-dashboard-content').style.display = 'block';
                 initApp();
@@ -624,7 +629,6 @@ def generate_interactive_calendar():
             }
         }
 
-        // إضافة إمكانية الضغط على Enter في حقول تسجيل الدخول للسهولة
         document.getElementById('password').addEventListener('keyup', function(event) {
             if (event.key === 'Enter') validateLogin();
         });
@@ -673,34 +677,39 @@ def generate_interactive_calendar():
 
         function updateKPIs(data, useReps) {
             let totalPrograms = 0;
+            let totalTargets = 0; // حساب المتدربين المضاف حديثاً
             let totalCost = 0;
             let totalTravel = 0;
             let grandTotal = 0;
 
             data.forEach(item => {
                 const multiplier = useReps ? item.repetitions : 1;
-                totalPrograms += item.repetitions;
+                totalPrograms += useReps ? item.repetitions : 1;
+                totalTargets += (item.target_count * multiplier);
                 totalCost += (item.program_cost * multiplier);
                 totalTravel += (item.travel_cost * multiplier);
                 grandTotal += (item.grand_total * multiplier);
             });
 
             const kpiPrograms = document.getElementById('total-programs-kpi');
+            const kpiTargets = document.getElementById('total-targets-kpi'); // بطاقة المتدربين
             const kpiCost = document.getElementById('total-cost-kpi');
             const kpiTravel = document.getElementById('total-travel-kpi');
             const kpiGrand = document.getElementById('grand-total-kpi');
 
             document.getElementById('title-programs').innerText = useReps ? "إجمالي البرامج (بالتكرار)" : "إجمالي البرامج المدرجة";
+            document.getElementById('title-targets').innerText = useReps ? "إجمالي المتدربين (بالتكرار)" : "إجمالي المتدربين المستهدفين";
             document.getElementById('title-cost').innerText = useReps ? "إجمالي ميزانية التنفيذ (بالتكرار)" : "إجمالي ميزانية التنفيذ (البرنامج)";
             document.getElementById('title-travel').innerText = useReps ? "تكاليف الانتداب والإركاب (بالتكرار)" : "تكاليف الانتداب والإركاب التقديري";
             document.getElementById('title-grand').innerText = useReps ? "المجموع الكلي للميزانيات (بالتكرار)" : "المجموع الكلي التقديري للميزانيات";
 
-            kpiPrograms.innerText = useReps ? totalPrograms : data.length;
+            kpiPrograms.innerText = totalPrograms;
+            kpiTargets.innerText = totalTargets.toLocaleString('ar-SA');
             kpiCost.innerText = totalCost.toLocaleString('ar-SA') + ' ⃁';
             kpiTravel.innerText = totalTravel.toLocaleString('ar-SA') + ' ⃁';
             kpiGrand.innerText = grandTotal.toLocaleString('ar-SA') + ' ⃁';
 
-            [kpiPrograms, kpiCost, kpiTravel, kpiGrand].forEach(el => {
+            [kpiPrograms, kpiTargets, kpiCost, kpiTravel, kpiGrand].forEach(el => {
                 if (useReps) el.classList.add('mode-repeated');
                 else el.classList.remove('mode-repeated');
             });
@@ -763,7 +772,8 @@ def generate_interactive_calendar():
                     '<br><span class="rep-badge">عدد التكرار المعتمد: ' + item.repetitions + '</span></td>' +
                     '<td>' + item.date + ' <span style="font-size:11px; color:var(--brand-charcoal); display:block; font-weight: bold;">' + item.quarter + '</span></td>' +
                     '<td><span style="color:' + clr + '; font-weight:bold;">●</span> ' + item.path + '</td>' +
-                    '<td>' + item.duration + ' أيام <br><span style="font-size:11px; color:var(--brand-charcoal);">' + item.location + ' (' + item.type + ')</span></td>' +
+                    '<td>' + item.duration + ' أيام <br><span style="font-size:11px; color:var(--brand-charcoal);">' + item.location + ' (' + item.type + ')</span>' +
+                    '<br><span style="font-size:12px; font-weight:600; color:var(--brand-blue);">المستهدف: ' + (item.target_count * multiplier).toLocaleString('ar-SA') + ' متدرب</span></td>' +
                     '<td class="' + (useReps ? 'mode-repeated':'') + '">' + pCost.toLocaleString('ar-SA') + ' ⃁</td>' +
                     '<td class="' + (useReps ? 'mode-repeated':'') + '">' + tCost.toLocaleString('ar-SA') + ' ⃁</td>' +
                     '<td style="font-weight:700;" class="' + (useReps ? 'mode-repeated':'') + '">' + gTotal.toLocaleString('ar-SA') + ' ⃁</td>' +
@@ -784,8 +794,3 @@ def generate_interactive_calendar():
     output_filename = "index.html"
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(final_html)
-        
-    print(f"\n✨ تم تحديث الملف وحجب البيانات بنجاح خلف شاشة الدخول الموحدة!")
-
-if __name__ == "__main__":
-    generate_interactive_calendar()
