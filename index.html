@@ -4,137 +4,355 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap');
-        body { font-family: 'Tajawal', sans-serif; }
+        :root {
+            --brand-dark-green: #1d4229;
+            --brand-safari-green: #29693b;
+            --brand-bright-green: #00ff87;
+            --brand-gold: #b08932;
+            --brand-yellow: #f4d153;
+            --brand-charcoal: #4a4b4d;
+            --brand-purple: #420a70;
+            
+            --bg-primary: #f4f7f5;
+            --text-main: #2b302c;
+            --card-bg: #ffffff;
+            --border-color: #e2e8e4;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            padding: 20px;
+        }
+        
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            margin-bottom: 25px;
+            border-bottom: 3px solid var(--brand-dark-green);
+        }
+        .page-title-box {
+            flex-grow: 1;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .page-title-box h1 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: var(--brand-dark-green); 
+        }
+        .page-title-box p { 
+            font-size: 13px; 
+            color: var(--brand-charcoal); 
+            margin-top: 4px;
+        }
+        .logo-area {
+            flex-shrink: 0;
+            max-width: 180px;
+        }
+        .logo-area img {
+            max-width: 100%;
+            max-height: 75px;
+            object-fit: contain;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .top-filters-container {
+            background: linear-gradient(135deg, var(--brand-dark-green), var(--brand-safari-green));
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(29, 66, 41, 0.15);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-group label { 
+            display: block; 
+            font-size: 13px; 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+            color: #ffffff; 
+        }
+        .filter-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background-color: #ffffff;
+            font-size: 14px;
+            color: var(--brand-dark-green);
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            background-color: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+        }
+        .toggle-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--brand-dark-green);
+            margin-left: 15px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; width: 22px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--brand-gold); }
+        input:checked + .slider:before { transform: translateX(-30px); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-right: 5px solid var(--brand-safari-green);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .stat-card h3 { font-size: 14px; color: var(--brand-charcoal); margin-bottom: 8px; }
+        .stat-card .value { font-size: 24px; font-weight: 700; color: var(--brand-dark-green); }
+        
+        .mode-repeated {
+            color: var(--brand-gold) !important;
+            font-size: 25px !important;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        .section-box {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.02);
+        }
+        .section-title {
+            font-size: 18px;
+            color: var(--brand-dark-green);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg-primary);
+        }
+
+        .gantt-chart-wrapper { overflow-x: auto; margin-top: 15px; }
+        .gantt-container {
+            min-width: 900px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .gantt-header {
+            display: flex;
+            background-color: #f8faf9;
+            font-weight: bold;
+            border-bottom: 2px solid var(--border-color);
+            text-align: center;
+        }
+        .gantt-row { display: flex; border-bottom: 1px solid var(--border-color); align-items: center; }
+        .gantt-row:hover { background-color: #f3f7f4; }
+        .gantt-label {
+            width: 260px;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border-left: 1px solid var(--border-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gantt-timeline-area { flex: 1; position: relative; height: 45px; display: flex; align-items: center; }
+        .gantt-bar {
+            height: 26px;
+            border-radius: 15px;
+            color: white;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            font-weight: 600;
+            position: absolute;
+            cursor: pointer;
+        }
+        .gantt-col-head { flex: 1; padding: 12px 5px; font-size: 12px; border-left: 1px solid var(--border-color); color: var(--brand-dark-green); }
+
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; text-align: right; font-size: 14px; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: #f8faf9; color: var(--brand-dark-green); font-weight: 700; }
+        
+        .rep-badge {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 4px;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body>
 
-    <header class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white shadow-md p-6 mb-8">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h1 class="text-2xl font-black tracking-wide">تقويم البرامج التدريبية ولوحة المؤشرات</h1>
-                <p class="text-slate-300 text-sm mt-1">نظام الأتمتة المطور وقراءة الميزانيات التشاركية سحابياً</p>
-            </div>
-            <div class="bg-white/10 px-4 py-2 rounded-lg text-xs backdrop-blur-sm">
-                <i class="fa-solid fa-rotate text-emerald-400 animate-spin ml-2"></i>
-                تحديث تلقائي عبر منصة GitHub Actions
-            </div>
+    <div class="header-container">
+        <div class="page-title-box">
+            <h1>تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)</h1>
+            <p>الخطة الشاملة للمسارات التدريبية وفق وثيقة التدريب</p>
         </div>
-    </header>
+        <div class="logo-area">
+            <img src="https://weqaa.gov.sa/web/image/website/1/header_logo/%D9%85%D8%B1%D9%83%D8%B2%20%D9%8...%D8%A7%D8%A1?unique=457fbf0" alt="شعار المركز" onerror="this.style.display='none';">
+        </div>
+    </div>
 
-    <main class="max-w-7xl mx-auto px-4 pb-12">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">إجمالي البرامج المستهدفة</p>
-                    <h3 id="stat-total-programs" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
+    <div class="controls-wrapper">
+        <div class="top-filters-container">
+            <div class="filter-group">
+                <label for="filter-year">📅 العام المستهدف:</label>
+                <select id="filter-year" onchange="applyFilters()">
+                    <option value="all">كل الأعوام المستهدفة (2026 - 2028)</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                    <option value="2028">2028</option>
+                </select>
             </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">إجمالي المستهدفين (متدرب)</p>
-                    <h3 id="stat-total-trainees" class="text-3xl font-bold text-slate-900 mt-1">0</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-users"></i>
-                </div>
+            <div class="filter-group">
+                <label for="filter-quarter">⏱️ الربع السنوي الخاضع للتحليل:</label>
+                <select id="filter-quarter" onchange="applyFilters()">
+                    <option value="all">كل الأرباع السنوية (الشامل)</option>
+                    <option value="Q1">الربع الأول (Q1)</option>
+                    <option value="Q2">الربع الثاني (Q2)</option>
+                    <option value="Q3">الربع الثالث (Q3)</option>
+                    <option value="Q4">الربع الرابع (Q4)</option>
+                </select>
             </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">تكلفة تنفيذ البرامج</p>
-                    <h3 id="stat-program-cost" class="text-2xl font-bold text-slate-900 mt-1">0.00 <span class="text-xs text-slate-400">ريال</span></h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-wallet"></i>
-                </div>
+            <div class="filter-group">
+                <label for="filter-path">🎯 المسار التخصصي التدريبي:</label>
+                <select id="filter-path" onchange="applyFilters()"></select>
             </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500 font-medium">الميزانية الإجمالية (مع الانتدابات)</p>
-                    <h3 id="stat-grand-total" class="text-2xl font-bold text-indigo-900 mt-1">0.00 <span class="text-xs text-slate-400">ريال</span></h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-coins"></i>
-                </div>
+            <div class="filter-group">
+                <label for="filter-type">⚙️ طريقة التنفيذ:</label>
+                <select id="filter-type" onchange="applyFilters()"></select>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
-            <h3 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-filter text-indigo-600"></i> تصفية وتحديد البيانات المعروضة
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">الربع السنوي</label>
-                    <select id="filter-quarter" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-                        <option value="all">كل الأرباع</option>
-                        <option value="Q1">الربع الأول (Q1)</option>
-                        <option value="Q2">الربع الثاني (Q2)</option>
-                        <option value="Q3">الربع الثالث (Q3)</option>
-                        <option value="Q4">الربع الرابع (Q4)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">المسار التدريبي</label>
-                    <select id="filter-path" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-                        <option value="all">كل المسارات</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">طريقة التنفيذ</label>
-                    <select id="filter-type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-                        <option value="all">الكل (حضوري / عن بعد)</option>
-                        <option value="حضوري">حضوري</option>
-                        <option value="عن بعد">عن بعد</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">بحث باسم البرنامج</label>
-                    <input type="text" id="search-name" placeholder="اكتب للبحث..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-                </div>
+        <div class="toggle-container">
+            <label class="switch">
+                <input type="checkbox" id="toggle-reps" onchange="applyFilters()">
+                <span class="slider"></span>
+            </label>
+            <span class="toggle-label">     🔄 تفعيل احتساب المؤشرات بالتكرار </span>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card" style="border-right-color: var(--brand-dark-green);">
+            <h3 id="title-programs">إجمالي البرامج المدرجة</h3>
+            <div class="value" id="total-programs-kpi">0</div>
+        </div>
+        <div class="stat-card" style="border-right-color: var(--brand-gold);">
+            <h3 id="title-cost">إجمالي ميزانية التنفيذ (البرنامج)</h3>
+            <div class="value" id="total-cost-kpi">0 ⃁</div>
+        </div>
+        <div class="stat-card" style="border-right-color: var(--brand-charcoal);">
+            <h3 id="title-travel">تكاليف الانتداب والإركاب التقديري</h3>
+            <div class="value" id="total-travel-kpi">0 ⃁</div>
+        </div>
+        <div class="stat-card" style="border-right-color: var(--brand-safari-green);">
+            <h3 id="title-grand">المجموع الكلي التقديري للميزانيات</h3>
+            <div class="value" id="grand-total-kpi">0 ⃁</div>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <div class="section-box">
+            <h2 class="section-title">📊 المخطط الزمني التفاعلي</h2>
+            <div class="gantt-chart-wrapper">
+                <div class="gantt-container" id="gantt-container-box"></div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                <h2 class="font-bold text-slate-800 text-base">جدول البرامج المدرجة بالخطة</h2>
-                <span id="counter-label" class="bg-indigo-50 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">معاينة: 0 برنامج</span>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="w-full text-right border-collapse">
+        <div class="section-box">
+            <h2 class="section-title">🖨️ جدول البيانات والخطط التفصيلية (خيارات تتبع بنود الميزانية والتكرار)</h2>
+            <div class="table-container">
+                <table id="data-table-report">
                     <thead>
-                        <tr class="bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
-                            <th class="p-4">اسم البرنامج</th>
-                            <th class="p-4">المسار</th>
-                            <th class="p-4">تاريخ التنفيذ</th>
-                            <th class="p-4">المدة / الفئة</th>
-                            <th class="p-4 text-center">المستهدفين</th>
-                            <th class="p-4 text-left">تكلفة البرنامج</th>
-                            <th class="p-4 text-left">التكلفة الإجمالية</th>
+                        <tr>
+                            <th>اسم البرنامج التدريبي</th>
+                            <th>تاريخ البدء</th>
+                            <th>المسار التدريبي</th>
+                            <th>المدة / الموقع</th>
+                            <th>تكلفة التنفيذ (البرنامج)</th>
+                            <th>الإركاب والانتداب</th>
+                            <th>المجموع الكلي</th>
                         </tr>
                     </thead>
-                    <tbody id="data-table-rows" class="divide-y divide-slate-100 text-sm">
-                        </tbody>
+                    <tbody id="table-body-target"></tbody>
                 </table>
             </div>
         </div>
-
-    </main>
+    </div>
 
     <script>
-        // هذا هو الموضع المستهدف حيث يقوم خادم الأتمتة بحقن البيانات هنا بدلاً من الكلمة المحجوزة
         const trainingData = [
     {
         "id": "374",
@@ -7643,105 +7861,151 @@
         "grand_total": 115125.0
     }
 ];
+        const pathColorsMap = {};
+        const baseColors = ['#1d4229', '#29693b', '#b08932', '#420a70', '#4a4b4d', '#00a85a', '#cfa13a', '#5c1699'];
 
-        // دالة المساعدة لتنسيق العملات والأرقام المالية بدقة وحفظ الكسور العشرية (.00)
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(value);
-        }
-
-        // تعبئة قائمة فلاتر "المسارات التدريبية" ديناميكياً من البيانات الفعلية المتاحة
-        function populatePathFilter() {
+        function initApp() {
             const pathSelect = document.getElementById('filter-path');
-            const paths = [...new Set(trainingData.map(item => item.path))].filter(Boolean);
-            
-            paths.forEach(path => {
-                const option = document.createElement('option');
-                option.value = path;
-                option.textContent = path;
-                pathSelect.appendChild(option);
+            const uniquePaths = [...new Set(trainingData.map(item => item.path))];
+            let pathOptions = '<option value="all">كل المسارات التدريبية</option>';
+            uniquePaths.forEach((path, index) => {
+                pathColorsMap[path] = baseColors[index % baseColors.length];
+                pathOptions += '<option value="' + path + '">' + path + '</option>';
             });
+            pathSelect.innerHTML = pathOptions;
+
+            const typeSelect = document.getElementById('filter-type');
+            const uniqueTypes = [...new Set(trainingData.map(item => item.type))];
+            let typeOptions = '<option value="all">كل طرق التنفيذ</option>';
+            uniqueTypes.forEach(type => { typeOptions += '<option value="' + type + '">' + type + '</option>'; });
+            typeSelect.innerHTML = typeOptions;
+
+            applyFilters();
         }
 
-        // الدالة الرئيسية لحساب المؤشرات وإعادة بناء الجدول بناءً على الفلاتر النشطة
-        function renderDashboard() {
+        function applyFilters() {
+            const yearFilter = document.getElementById('filter-year').value;
             const quarterFilter = document.getElementById('filter-quarter').value;
             const pathFilter = document.getElementById('filter-path').value;
             const typeFilter = document.getElementById('filter-type').value;
-            const searchQuery = document.getElementById('search-name').value.toLowerCase().strip();
 
-            const tbody = document.getElementById('data-table-rows');
-            tbody.innerHTML = '';
-
-            let totalPrograms = 0;
-            let totalTrainees = 0;
-            let totalProgCost = 0.0;
-            let totalGrandCost = 0.0;
-
-            // فلترة المصفوفة
             const filteredData = trainingData.filter(item => {
+                const matchYear = (yearFilter === 'all' || item.year.toString() === yearFilter);
                 const matchQuarter = (quarterFilter === 'all' || item.quarter === quarterFilter);
                 const matchPath = (pathFilter === 'all' || item.path === pathFilter);
-                const matchType = (typeFilter === 'all' || item.type.includes(typeFilter));
-                const matchSearch = (!searchQuery || item.name.toLowerCase().includes(searchQuery));
-                return matchQuarter && matchPath && matchType && matchSearch;
+                const matchType = (typeFilter === 'all' || item.type === typeFilter);
+                return matchYear && matchQuarter && matchPath && matchType;
             });
 
-            // معالجة البيانات وبناء الصفوف داخل الجدول
-            filteredData.forEach(item => {
-                totalPrograms++;
-                totalTrainees += item.target_count;
-                totalProgCost += item.program_cost;
-                totalGrandCost += item.grand_total;
+            const isRepeatedMode = document.getElementById('toggle-reps').checked;
 
-                const row = document.createElement('tr');
-                row.className = 'hover:bg-slate-50/80 transition-colors';
-                row.innerHTML = `
-                    <td class="p-4">
-                        <div class="font-bold text-slate-900">${item.name}</div>
-                        <div class="text-xs text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot ml-1"></i>${item.location} | ${item.type}</div>
-                    </td>
-                    <td class="p-4">
-                        <span class="bg-slate-100 text-slate-700 text-xs px-2.5 py-1 rounded-md font-medium">${item.path}</span>
-                    </td>
-                    <td class="p-4 text-xs font-mono text-slate-600">
-                        <div>${item.date}</div>
-                        <div class="text-indigo-500 font-bold mt-0.5">${item.quarter}</div>
-                    </td>
-                    <td class="p-4 text-xs text-slate-600">
-                        <div>${item.duration} أيام</div>
-                        <div class="text-slate-400 mt-0.5">${item.entity}</div>
-                    </td>
-                    <td class="p-4 text-center font-bold text-slate-700">${item.target_count}</td>
-                    <td class="p-4 text-left font-mono font-medium text-slate-600">${formatCurrency(item.program_cost)}</td>
-                    <td class="p-4 text-left font-mono font-bold text-indigo-600">${formatCurrency(item.grand_total)}</td>
-                `;
-                tbody.appendChild(row);
-            });
-
-            // تحديث بطاقات المؤشرات العلوية مع الحفاظ على الدقة
-            document.getElementById('stat-total-programs').textContent = totalPrograms;
-            document.getElementById('stat-total-trainees').textContent = new Intl.NumberFormat('en-US').format(totalTrainees);
-            document.getElementById('stat-program-cost').innerHTML = `${formatCurrency(totalProgCost)} <span class="text-xs text-slate-400">ريال</span>`;
-            document.getElementById('stat-grand-total').innerHTML = `${formatCurrency(totalGrandCost)} <span class="text-xs text-slate-400">ريال</span>`;
-            
-            // تحديث عداد المعاينة الحالي
-            document.getElementById('counter-label').textContent = `معاينة: ${totalPrograms} برنامج`;
+            updateKPIs(filteredData, isRepeatedMode);
+            renderGanttChart(filteredData);
+            renderReportTable(filteredData, isRepeatedMode);
         }
 
-        // مستمعو الأحداث (Event Listeners) لإعادة الحساب فور تغيير أي فلتر
-        document.getElementById('filter-quarter').addEventListener('change', renderDashboard);
-        document.getElementById('filter-path').addEventListener('change', renderDashboard);
-        document.getElementById('filter-type').addEventListener('change', renderDashboard);
-        document.getElementById('search-name').addEventListener('input', renderDashboard);
+        function updateKPIs(data, useReps) {
+            let totalPrograms = 0;
+            let totalCost = 0;
+            let totalTravel = 0;
+            let grandTotal = 0;
 
-        // تشغيل التهيئة الأولية عند تحميل الصفحة بالكامل
-        window.addEventListener('DOMContentLoaded', () => {
-            populatePathFilter();
-            renderDashboard();
-        });
+            data.forEach(item => {
+                const multiplier = useReps ? item.repetitions : 1;
+                totalPrograms += item.repetitions;
+                totalCost += (item.program_cost * multiplier);
+                totalTravel += (item.travel_cost * multiplier);
+                grandTotal += (item.grand_total * multiplier);
+            });
+
+            const kpiPrograms = document.getElementById('total-programs-kpi');
+            const kpiCost = document.getElementById('total-cost-kpi');
+            const kpiTravel = document.getElementById('total-travel-kpi');
+            const kpiGrand = document.getElementById('grand-total-kpi');
+
+            document.getElementById('title-programs').innerText = useReps ? "إجمالي البرامج (بالتكرار)" : "إجمالي البرامج المدرجة";
+            document.getElementById('title-cost').innerText = useReps ? "إجمالي ميزانية التنفيذ (بالتكرار)" : "إجمالي ميزانية التنفيذ (البرنامج)";
+            document.getElementById('title-travel').innerText = useReps ? "تكاليف الانتداب والإركاب (بالتكرار)" : "تكاليف الانتداب والإركاب التقديري";
+            document.getElementById('title-grand').innerText = useReps ? "المجموع الكلي للميزانيات (بالتكرار)" : "المجموع الكلي التقديري للميزانيات";
+
+            kpiPrograms.innerText = useReps ? totalPrograms : data.length;
+            kpiCost.innerText = totalCost.toLocaleString('ar-SA') + ' ⃁';
+            kpiTravel.innerText = totalTravel.toLocaleString('ar-SA') + ' ⃁';
+            kpiGrand.innerText = grandTotal.toLocaleString('ar-SA') + ' ⃁';
+
+            [kpiPrograms, kpiCost, kpiTravel, kpiGrand].forEach(el => {
+                if (useReps) el.classList.add('mode-repeated');
+                else el.classList.remove('mode-repeated');
+            });
+        }
+
+        function renderGanttChart(data) {
+            const container = document.getElementById('gantt-container-box');
+            let htmlContent = '<div class="gantt-header">' +
+                '<div class="gantt-label" style="background:#e8ede9;">اسم البرنامج التدريبي</div>' +
+                '<div class="gantt-col-head">الربع الأول (Q1)</div>' +
+                '<div class="gantt-col-head">الربع الثاني (Q2)</div>' +
+                '<div class="gantt-col-head">الربع الثالث (Q3)</div>' +
+                '<div class="gantt-col-head">الربع الرابع (Q4)</div>' +
+                '</div>';
+
+            if(data.length === 0) {
+                htmlContent += '<div style="padding:20px; text-align:center; color:#94a3b8;">لا توجد برامج تدريبية تطابق خيارات التصفية الحالية</div>';
+                container.innerHTML = htmlContent;
+                return;
+            }
+
+            data.slice(0, 200).forEach(item => {
+                let rightPercent = 0;
+                let widthPercent = 21;
+
+                if (item.quarter === 'Q1') rightPercent = 2;
+                else if (item.quarter === 'Q2') rightPercent = 27;
+                else if (item.quarter === 'Q3') rightPercent = 52;
+                else if (item.quarter === 'Q4') rightPercent = 77;
+
+                const barColor = pathColorsMap[item.path] || '#475569';
+
+                htmlContent += '<div class="gantt-row">' +
+                    '<div class="gantt-label" title="' + item.name + '">' + item.name + ' <span style="font-size:10px; color:var(--brand-gold);">[×' + item.repetitions + ']</span></div>' +
+                    '<div class="gantt-timeline-area">' +
+                    '<div class="gantt-bar" style="right: ' + rightPercent + '%; width: ' + widthPercent + '%; background-color: ' + barColor + ';" ' +
+                    'title="المسار: ' + item.path + ' | التكرار: ' + item.repetitions + ' | المجموع الفرعي: ' + item.grand_total.toLocaleString('ar-SA') + ' ⃁">' +
+                    item.path + ' (' + item.duration + ' أيام) - ' + item.type +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+            });
+            container.innerHTML = htmlContent;
+        }
+
+        function renderReportTable(data, useReps) {
+            const tbody = document.getElementById('table-body-target');
+            let tableHtml = '';
+
+            data.forEach(item => {
+                const clr = pathColorsMap[item.path] || '#333';
+                const multiplier = useReps ? item.repetitions : 1;
+                
+                const pCost = item.program_cost * multiplier;
+                const tCost = item.travel_cost * multiplier;
+                const gTotal = item.grand_total * multiplier;
+
+                tableHtml += '<tr>' +
+                    '<td style="font-weight:600; color:var(--brand-dark-green);">' + item.name + 
+                    '<br><span class="rep-badge">عدد التكرار المعتمد: ' + item.repetitions + '</span></td>' +
+                    '<td>' + item.date + ' <span style="font-size:11px; color:var(--brand-charcoal); display:block; font-weight: bold;">' + item.quarter + '</span></td>' +
+                    '<td><span style="color:' + clr + '; font-weight:bold;">●</span> ' + item.path + '</td>' +
+                    '<td>' + item.duration + ' أيام <br><span style="font-size:11px; color:var(--brand-charcoal);">' + item.location + ' (' + item.type + ')</span></td>' +
+                    '<td class="' + (useReps ? 'mode-repeated':'') + '">' + pCost.toLocaleString('ar-SA') + ' ⃁</td>' +
+                    '<td class="' + (useReps ? 'mode-repeated':'') + '">' + tCost.toLocaleString('ar-SA') + ' ⃁</td>' +
+                    '<td style="font-weight:700;" class="' + (useReps ? 'mode-repeated':'') + '">' + gTotal.toLocaleString('ar-SA') + ' ⃁</td>' +
+                    '</tr>';
+            });
+            tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">لا توجد بيانات متاحة للعرض حالياً</td></tr>';
+        }
+
+        window.onload = initApp;
     </script>
 </body>
 </html>
