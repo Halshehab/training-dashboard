@@ -2,8 +2,8 @@ name: Refresh Dashboard Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # تحديث دوري مبرمج كل 6 ساعات تلقائياً
-  workflow_dispatch: # يتيح لك التشغيل يدوياً متى ما رغبت بضغطة زر واحدة
+    - cron: '0 */6 * * *' # تشغيل آلي كل 6 ساعات
+  workflow_dispatch: # تشغيل يدوياً بضغطة زر
 
 permissions:
   contents: write
@@ -33,10 +33,14 @@ jobs:
         git config --global user.name "GitHub Action"
         git config --global user.email "action@github.com"
         
+        # إضافة ملف index.html المستخرج الجديد
         git add index.html
         
-        git diff-index --quiet HEAD || git commit -m "🔄 تحديث حي ومباشر للبيانات من Google Sheets"
+        # حفظ التعديلات محلياً
+        git diff-index --quiet HEAD || git commit -m "🔄 تحديث دوري تلقائي للبيانات التدريبية"
         
+        # دمج آمن ومباشر
         git pull origin main -X ours --allow-unrelated-histories --rebase=false || true
         
+        # رفع البيانات الحية إلى المستودع
         git push origin main
