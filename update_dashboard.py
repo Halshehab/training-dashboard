@@ -786,7 +786,7 @@ def generate_interactive_calendar():
 </html>
 """
 
-dashboard_title = "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
+    dashboard_title = "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
     final_html = html_template.replace("__DATA_PLACEHOLDER__", programs_json)
     final_html = final_html.replace("__DASHBOARD_TITLE__", dashboard_title)
 
