@@ -30,7 +30,7 @@ def generate_interactive_calendar():
     # تنظيف مسميات الأعمدة
     df.columns = df.columns.str.strip()
     
-    # خريطة لمطابقة الأعمدة بدقة
+    # خريطة لمطابقة الأعمدة بدقة بما فيها أعمدة التواريخ المباشرة للحقائب وحالة الجاهزية
     rename_dict = {
         'التاريخ': 'Date',
         'السنة': 'Year',
@@ -44,7 +44,12 @@ def generate_interactive_calendar():
         'الفئة المستهدفة': 'Entity',
         'تكلفة البرنامج': 'Program_Cost',  
         'إجمالي تكلفة أمر الإركاب والانتداب': 'Total_Travel_Cost',
-        'التكرارات': 'Repetitions'
+        'التكرارات': 'Repetitions',
+        'تاريخ بدء التطوير': 'Bag_Dev_Start',
+        'تاريخ انتهاء التطوير': 'Bag_Dev_End',
+        'تاريخ انتهاء المراجعة': 'Bag_Review_End',
+        'تاريخ الاعتماد النهائي': 'Bag_Approval',
+        'حالة الجاهزية': 'Readiness_Status'
     }
     
     df = df.rename(columns=rename_dict)
@@ -54,6 +59,12 @@ def generate_interactive_calendar():
     df['Year'] = df['Date'].dt.year.fillna(2026).astype(int)
     df['Month_Val'] = df['Date'].dt.month.fillna(1).astype(int)
     
+    # معالجة تواريخ الحقائب التدريبية وتحويلها لتواريخ مقروءة
+    bag_date_cols = ['Bag_Dev_Start', 'Bag_Dev_End', 'Bag_Review_End', 'Bag_Approval']
+    for col in bag_date_cols:
+        if col in df.columns:
+            df[col] = pd.to_datetime(df[col], errors='coerce')
+
     def calculate_quarter(month):
         if month in [1, 2, 3]: return 'Q1'
         elif month in [4, 5, 6]: return 'Q2'
@@ -85,6 +96,7 @@ def generate_interactive_calendar():
     df['Type'] = df['Type'].fillna('حضوري')
     df['Location'] = df['Location'].fillna('المقر الرئيسي')
     df['Entity'] = df['Entity'].fillna('جميع الموظفين')
+    df['Readiness_Status'] = df['Readiness_Status'].fillna('لم تبدأ')
 
     # تجهيز سجلات JSON
     programs_list = []
@@ -93,6 +105,13 @@ def generate_interactive_calendar():
         prog_cost = float(row['Program_Cost'])
         trav_cost = float(row['Total_Travel_Cost'])
         
+        # استخراج نصوص التواريخ الخاصة بمراحل الحقيبة مباشرة
+        b_dev_start = row['Bag_Dev_Start'].strftime('%Y-%m-%d') if ('Bag_Dev_Start' in row and pd.notnull(row['Bag_Dev_Start'])) else '-'
+        b_dev_end = row['Bag_Dev_End'].strftime('%Y-%m-%d') if ('Bag_Dev_End' in row and pd.notnull(row['Bag_Dev_End'])) else '-'
+        b_rev_end = row['Bag_Review_End'].strftime('%Y-%m-%d') if ('Bag_Review_End' in row and pd.notnull(row['Bag_Review_End'])) else '-'
+        b_approval = row['Bag_Approval'].strftime('%Y-%m-%d') if ('Bag_Approval' in row and pd.notnull(row['Bag_Approval'])) else '-'
+        r_status = str(row['Readiness_Status']).strip()
+
         program_item = {
             "id": str(row.get('م', len(programs_list)+1)),
             "name": str(row['Program_Name']),
@@ -109,13 +128,18 @@ def generate_interactive_calendar():
             "program_cost": prog_cost,
             "travel_cost": trav_cost,
             "repetitions": int(row['Repetitions']),
-            "grand_total": prog_cost + trav_cost
+            "grand_total": prog_cost + trav_cost,
+            "bag_dev_start": b_dev_start,
+            "bag_dev_end": b_dev_end,
+            "bag_review_end": b_rev_end,
+            "bag_approval": b_approval,
+            "readiness_status": r_status
         }
         programs_list.append(program_item)
 
     programs_json = json.dumps(programs_list, ensure_ascii=False, indent=4)
 
-    # قالب واجهة الـ HTML المحدث بالكامل مع بوابه تسجيل الدخول وإزالة زر الإكسيل
+    # قالب واجهة الـ HTML
     html_template = """<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -150,7 +174,6 @@ def generate_interactive_calendar():
             padding: 20px;
         }
         
-        /* شاشة بوابة تسجيل الدخول المخصصة والمحجوبة */
         #login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -234,7 +257,6 @@ def generate_interactive_calendar():
             display: none;
         }
 
-        /* محتوى اللوحة الرئيسي (يخفى تلقائياً حتى نجاح الدخول) */
         #main-dashboard-content {
             display: none;
         }
@@ -313,10 +335,6 @@ def generate_interactive_calendar():
             font-weight: 600;
             outline: none;
             transition: all 0.2s;
-        }
-        .filter-group input::placeholder {
-            color: #a0aec0;
-            font-weight: normal;
         }
 
         .action-row-container {
@@ -466,6 +484,19 @@ def generate_interactive_calendar():
             display: inline-block;
             margin-top: 4px;
         }
+
+        /* تنسيقات شارات حالة الجاهزية */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+        .status-not-started { background-color: #fee2e2; color: #991b1b; }
+        .status-in-progress { background-color: #e0f2fe; color: #0369a1; }
+        .status-completed { background-color: #dcfce7; color: #15803d; }
     </style>
 </head>
 <body>
@@ -568,17 +599,17 @@ def generate_interactive_calendar():
         </div>
 
         <div class="main-layout">
-<div style="text-align: left; margin: 15px 20px;">
+            <div style="text-align: left; margin: 15px 20px;">
                 <button type="button" onclick="openBagsModal()" style="background-color: var(--brand-gold); color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
                     💼 المخطط الزمني ومواعيد الحقائب التفصيلية
                 </button>
             </div>
 
-            <div id="bagsTimelineModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); font-family: inherit;">
-                <div style="background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 90%; max-width: 1200px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); direction: rtl;">
+            <div id="bagsTimelineModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+                <div style="background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 92%; max-width: 1300px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); direction: rtl;">
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; color: var(--brand-green); font-size: 20px; font-weight: bold;">🗓️ المخطط الزمني وجدول المواعيد التفصيلية لإعداد الحقائب (جدولة عكسية)</h2>
+                        <h2 style="margin: 0; color: var(--brand-dark-green); font-size: 20px; font-weight: bold;">🗓️ جدول المواعيد والمراحل التفصيلية لإعداد الحقائب التدريبية وجاهزيتها</h2>
                         <span onclick="closeBagsModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#aaa'">&times;</span>
                     </div>
 
@@ -586,15 +617,14 @@ def generate_interactive_calendar():
                         <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 13px;">
                             <thead>
                                 <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; width: 30%;">اسم البرنامج التدريبي وتاريخ تنفيذه</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">مرحلة الإعداد والتطوير (10 أيام)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">مرحلة المراجعة والتدقيق (5 أيام)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">الاعتماد النهائي (يوم واحد)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 15%;">توزيع الفترات التتابعية للحقيبة</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; width: 28%;">اسم البرنامج التدريبي وتاريخ تنفيذه</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 20%;">مرحلة الإعداد والتطوير</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 20%;">مرحلة المراجعة والتدقيق</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 16%;">الاعتماد النهائي</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 16%;">حالة الجاهزية</th>
                                 </tr>
                             </thead>
-                            <tbody id="bags-dynamic-rows">
-                                </tbody>
+                            <tbody id="bags-dynamic-rows"></tbody>
                         </table>
                     </div>
                 </div>
@@ -630,7 +660,6 @@ def generate_interactive_calendar():
     </div>
 
     <script>
-        // بيانات تسجيل الدخول الافتراضية - يمكنك تعديلها بحرية من هنا
         const AUTH_CONFIG = {
             username: "admin",
             password: "weqaa2026"
@@ -640,14 +669,12 @@ def generate_interactive_calendar():
         const pathColorsMap = {};
         const baseColors = ['#1d4229', '#29693b', '#b08932', '#420a70', '#4a4b4d', '#00a85a', '#cfa13a', '#5c1699'];
 
-        // دالة التحقق من صحة تسجيل الدخول
         function validateLogin() {
             const userInp = document.getElementById('username').value.trim();
             const passInp = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error');
 
             if (userInp === AUTH_CONFIG.username && passInp === AUTH_CONFIG.password) {
-                // إخفاء بوابة الدخول وإظهار اللوحة التفاعلية بالكامل
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('main-dashboard-content').style.display = 'block';
                 initApp();
@@ -656,7 +683,6 @@ def generate_interactive_calendar():
             }
         }
 
-        // إضافة إمكانية الضغط على Enter في حقول تسجيل الدخول للسهولة
         document.getElementById('password').addEventListener('keyup', function(event) {
             if (event.key === 'Enter') validateLogin();
         });
@@ -701,7 +727,7 @@ def generate_interactive_calendar():
             updateKPIs(filteredData, isRepeatedMode);
             renderGanttChart(filteredData);
             renderReportTable(filteredData, isRepeatedMode);
-	    buildBagsReverseTimeline(filteredData);
+            buildBagsDirectTimeline(filteredData);
         }
 
         function updateKPIs(data, useReps) {
@@ -804,7 +830,7 @@ def generate_interactive_calendar():
             });
             tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">لا توجد بيانات متاحة للعرض حالياً</td></tr>';
         }
-// دالات التحكم في فتح وإغلاق النافذة المنبثقة
+
         function openBagsModal() {
             document.getElementById('bagsTimelineModal').style.display = 'block';
         }
@@ -812,77 +838,49 @@ def generate_interactive_calendar():
             document.getElementById('bagsTimelineModal').style.display = 'none';
         }
 
-        // دالة بناء الجدولة العكسية والتوزيع التتابعي الفعلي
-        function buildBagsReverseTimeline(data) {
+        function buildBagsDirectTimeline(data) {
             const tbody = document.getElementById('bags-dynamic-rows');
             let rowsHtml = '';
 
             if(!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">لا توجد برامج مطابقة للفلاتر الحالية لجدولة الحقائب.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">لا توجد برامج مطابقة للحقائب.</td></tr>';
                 return;
             }
 
             data.forEach(item => {
-                // التقاط تاريخ التنفيذ الفعلي للبرنامج
-                const executionDate = new Date(item.date);
-                if (isNaN(executionDate.getTime())) return; // تخطي التواريخ غير الصحيحة
-
-                // دالة مساعدة لطرح أيام العمل الفعلي وتجنب عطلة نهاية الأسبوع (الجمعة والسبت) إذا رغبت
-                function subtractWorkDays(startDate, daysToSubtract) {
-                    let result = new Date(startDate);
-                    let counted = 0;
-                    while (counted < daysToSubtract) {
-                        result.setDate(result.getDate() - 1);
-                        // إذا أردت استبعاد الجمعة والسبت فك تفعيل السطر القادم، حالياً خصم تقويمي منتظم:
-                        counted++;
-                    }
-                    return result;
-                }
-
-                // الحسابات العكسية التتابعية بناءً على المرفق المثالي:
-                // 1. الاعتماد النهائي (قبل التنفيذ بـ 5 أيام عمل مثلاً أو مباشرة قبله)
-                const targetGap = 5; 
-                const dependencyDate = subtractWorkDays(executionDate, targetGap);
+                // تحديد نمط اللون المخصص لحالة الجاهزية ديناميكياً
+                let statusClass = 'status-not-started';
+                let statusText = item.readiness_status || 'لم تبدأ';
                 
-                // 2. مرحلة المراجعة والتدقيق (5 أيام قبل الاعتماد)
-                const reviewEndDate = new Date(dependencyDate);
-                const reviewStartDate = subtractWorkDays(reviewEndDate, 5);
-
-                // 3. مرحلة الإعداد والتطوير (10 أيام قبل المراجعة)
-                const devEndDate = new Date(reviewStartDate);
-                const devStartDate = subtractWorkDays(devEndDate, 10);
-
-                const formatYMD = (d) => d.toISOString().split('T')[0];
+                if (statusText.includes('مكتمل') || statusText.includes('جاهز') || statusText.includes('تمت')) {
+                    statusClass = 'status-completed';
+                } else if (statusText.includes('جاري') || statusText.includes('تحت')) {
+                    statusClass = 'status-in-progress';
+                }
 
                 rowsHtml += `<tr style="border-bottom: 1px solid #f1f5f9; vertical-align: middle;">
                     <td style="padding: 15px 12px;">
                         <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">${item.name}</div>
-                        <div style="color: #ef4444; font-size: 12px; font-weight: bold;">📅 التنفيذ: ${item.date}</div>
+                        <div style="color: var(--brand-safari-green); font-size: 12px; font-weight: bold;">📅 التنفيذ: ${item.date}</div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="font-size: 11px; margin-bottom: 4px;"><span style="color: #64748b;">البدء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${formatYMD(devStartDate)}</span></div>
-                        <div style="font-size: 11px;"><span style="color: #64748b;">الانتهاء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${formatYMD(devEndDate)}</span></div>
+                        <div style="font-size: 12px; margin-bottom: 4px;"><span style="color: #64748b;">البدء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${item.bag_dev_start}</span></div>
+                        <div style="font-size: 12px;"><span style="color: #64748b;">الانتهاء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${item.bag_dev_end}</span></div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="font-size: 11px; margin-bottom: 4px;"><span style="color: #b45309;">البدء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${formatYMD(reviewStartDate)}</span></div>
-                        <div style="font-size: 11px;"><span style="color: #b45309;">الانتهاء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${formatYMD(reviewEndDate)}</span></div>
+                        <div style="font-size: 12px;"><span style="color: #b45309;">الانتهاء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${item.bag_review_end}</span></div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="background: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: inline-block;">
-                            ${formatYMD(dependencyDate)}
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; padding: 6px 12px; border-radius: 6px; font-weight: 600; display: inline-block;">
+                            ${item.bag_approval}
                         </div>
-                        <div style="font-size: 11px; color: #64748b; margin-top: 4px;">(قبل التنفيذ بـ ${targetGap} أيام عمل)</div>
                     </td>
-                    
+
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="display: flex; width: 100%; height: 24px; border-radius: 4px; overflow: hidden; font-size: 10px; color: white; font-weight: bold; text-align: center; line-height: 24px;">
-                            <div style="flex: 2; background-color: #2563eb;" title="تطوير (10 أيام)">تطوير</div>
-                            <div style="flex: 1; background-color: #d97706;" title="مراجعة (5 أيام)">مراجعة</div>
-                            <div style="flex: 0.4; background-color: #16a34a;" title="اعتماد (يوم واحد)">اعتماد</div>
-                        </div>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
                     </td>
                 </tr>`;
             });
@@ -890,7 +888,6 @@ def generate_interactive_calendar():
             tbody.innerHTML = rowsHtml;
         }
 
-        // إغلاق النافذة تلقائياً إذا ضغط المستخدم خارج الصندوق الأبيض
         window.onclick = function(event) {
             const modal = document.getElementById('bagsTimelineModal');
             if (event.target == modal) {
@@ -902,16 +899,15 @@ def generate_interactive_calendar():
 </html>
 """
 
-    dashboard_title = "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
+    dashboard_title = "%s" % "تقويم البرامج التدريبية التفاعلي ولوحة مؤشرات الميزانية (2026 - 2028)"
     final_html = html_template.replace("__DATA_PLACEHOLDER__", programs_json)
     final_html = final_html.replace("__DASHBOARD_TITLE__", dashboard_title)
 
-    # حفظ السجل النهائي باسم index.html ليعمل على خوادم الـ Pages مباشرة
     output_filename = "index.html"
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(final_html)
         
-    print(f"\n✨ تم تحديث الملف وحجب البيانات بنجاح خلف شاشة الدخول الموحدة!")
+    print(f"\n✨ تم الإصلاح بنجاح! العمود الخامس 'حالة الجاهزية' يعمل الآن بشكل ملون وتفاعلي حياً من ملف الإكسيل.")
 
 if __name__ == "__main__":
     generate_interactive_calendar()
