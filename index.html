@@ -32,7 +32,6 @@
             padding: 20px;
         }
         
-        /* شاشة بوابة تسجيل الدخول المخصصة والمحجوبة */
         #login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -116,7 +115,6 @@
             display: none;
         }
 
-        /* محتوى اللوحة الرئيسي (يخفى تلقائياً حتى نجاح الدخول) */
         #main-dashboard-content {
             display: none;
         }
@@ -195,10 +193,6 @@
             font-weight: 600;
             outline: none;
             transition: all 0.2s;
-        }
-        .filter-group input::placeholder {
-            color: #a0aec0;
-            font-weight: normal;
         }
 
         .action-row-container {
@@ -348,6 +342,19 @@
             display: inline-block;
             margin-top: 4px;
         }
+
+        /* تنسيقات شارات حالة الجاهزية */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            text-align: center;
+        }
+        .status-not-started { background-color: #fee2e2; color: #991b1b; }
+        .status-in-progress { background-color: #e0f2fe; color: #0369a1; }
+        .status-completed { background-color: #dcfce7; color: #15803d; }
     </style>
 </head>
 <body>
@@ -450,17 +457,17 @@
         </div>
 
         <div class="main-layout">
-<div style="text-align: left; margin: 15px 20px;">
+            <div style="text-align: left; margin: 15px 20px;">
                 <button type="button" onclick="openBagsModal()" style="background-color: var(--brand-gold); color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: background 0.3s;">
                     💼 المخطط الزمني ومواعيد الحقائب التفصيلية
                 </button>
             </div>
 
-            <div id="bagsTimelineModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); font-family: inherit;">
-                <div style="background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 90%; max-width: 1200px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); direction: rtl;">
+            <div id="bagsTimelineModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+                <div style="background-color: #fff; margin: 5% auto; padding: 25px; border-radius: 12px; width: 92%; max-width: 1300px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); direction: rtl;">
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; color: var(--brand-green); font-size: 20px; font-weight: bold;">🗓️ المخطط الزمني وجدول المواعيد التفصيلية لإعداد الحقائب (جدولة عكسية)</h2>
+                        <h2 style="margin: 0; color: var(--brand-dark-green); font-size: 20px; font-weight: bold;">🗓️ جدول المواعيد والمراحل التفصيلية لإعداد الحقائب التدريبية وجاهزيتها</h2>
                         <span onclick="closeBagsModal()" style="color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.2s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#aaa'">&times;</span>
                     </div>
 
@@ -468,15 +475,14 @@
                         <table style="width: 100%; border-collapse: collapse; text-align: right; font-size: 13px;">
                             <thead>
                                 <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; width: 30%;">اسم البرنامج التدريبي وتاريخ تنفيذه</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">مرحلة الإعداد والتطوير (10 أيام)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">مرحلة المراجعة والتدقيق (5 أيام)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center;">الاعتماد النهائي (يوم واحد)</th>
-                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 15%;">توزيع الفترات التتابعية للحقيبة</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; width: 28%;">اسم البرنامج التدريبي وتاريخ تنفيذه</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 20%;">مرحلة الإعداد والتطوير</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 20%;">مرحلة المراجعة والتدقيق</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 16%;">الاعتماد النهائي</th>
+                                    <th style="padding: 12px; font-weight: bold; color: #334155; text-align: center; width: 16%;">حالة الجاهزية</th>
                                 </tr>
                             </thead>
-                            <tbody id="bags-dynamic-rows">
-                                </tbody>
+                            <tbody id="bags-dynamic-rows"></tbody>
                         </table>
                     </div>
                 </div>
@@ -512,7 +518,6 @@
     </div>
 
     <script>
-        // بيانات تسجيل الدخول الافتراضية - يمكنك تعديلها بحرية من هنا
         const AUTH_CONFIG = {
             username: "admin",
             password: "weqaa2026"
@@ -535,7 +540,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-10",
+        "bag_dev_end": "2028-07-20",
+        "bag_review_end": "2028-07-25",
+        "bag_approval": "2028-07-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "295",
@@ -553,7 +563,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-04-05",
+        "bag_dev_end": "2028-04-15",
+        "bag_review_end": "2028-04-20",
+        "bag_approval": "2028-04-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "397",
@@ -571,7 +586,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-21",
+        "bag_dev_end": "2028-08-31",
+        "bag_review_end": "2028-09-05",
+        "bag_approval": "2028-09-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "43",
@@ -589,7 +609,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-30",
+        "bag_dev_end": "2026-10-10",
+        "bag_review_end": "2026-10-15",
+        "bag_approval": "2026-10-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "91",
@@ -607,7 +632,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-01",
+        "bag_dev_end": "2027-02-11",
+        "bag_review_end": "2027-02-16",
+        "bag_approval": "2027-02-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "28",
@@ -625,7 +655,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-17",
+        "bag_dev_end": "2026-08-27",
+        "bag_review_end": "2026-09-01",
+        "bag_approval": "2026-09-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "272",
@@ -643,7 +678,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-01-03",
+        "bag_dev_end": "2028-01-13",
+        "bag_review_end": "2028-01-18",
+        "bag_approval": "2028-01-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "296",
@@ -661,7 +701,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-02-14",
+        "bag_dev_end": "2028-02-24",
+        "bag_review_end": "2028-02-29",
+        "bag_approval": "2028-02-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "299",
@@ -679,7 +724,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-27",
+        "bag_dev_end": "2028-04-06",
+        "bag_review_end": "2028-04-11",
+        "bag_approval": "2028-04-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "18",
@@ -697,7 +747,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-05",
+        "bag_dev_end": "2026-08-15",
+        "bag_review_end": "2026-08-20",
+        "bag_approval": "2026-08-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "306",
@@ -715,7 +770,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-27",
+        "bag_dev_end": "2028-04-06",
+        "bag_review_end": "2028-04-11",
+        "bag_approval": "2028-04-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "318",
@@ -733,7 +793,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-04-17",
+        "bag_dev_end": "2028-04-27",
+        "bag_review_end": "2028-05-02",
+        "bag_approval": "2028-05-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "232",
@@ -751,7 +816,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-03",
+        "bag_dev_end": "2027-11-13",
+        "bag_review_end": "2027-11-18",
+        "bag_approval": "2027-11-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "152",
@@ -769,7 +839,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-19",
+        "bag_dev_end": "2027-05-29",
+        "bag_review_end": "2027-06-03",
+        "bag_approval": "2027-06-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "349",
@@ -787,7 +862,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-01",
+        "bag_dev_end": "2027-12-11",
+        "bag_review_end": "2027-12-16",
+        "bag_approval": "2027-12-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "208",
@@ -805,7 +885,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-10-20",
+        "bag_dev_end": "2027-10-30",
+        "bag_review_end": "2027-11-04",
+        "bag_approval": "2027-11-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "379",
@@ -823,7 +908,12 @@
         "program_cost": 40000.0,
         "travel_cost": 133675.0,
         "repetitions": 5,
-        "grand_total": 173675.0
+        "grand_total": 173675.0,
+        "bag_dev_start": "2026-06-08",
+        "bag_dev_end": "2026-06-18",
+        "bag_review_end": "2026-06-23",
+        "bag_approval": "2026-06-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "17",
@@ -841,7 +931,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-29",
+        "bag_dev_end": "2026-08-08",
+        "bag_review_end": "2026-08-13",
+        "bag_approval": "2026-08-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "53",
@@ -859,7 +954,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2026-11-18",
+        "bag_dev_end": "2026-11-28",
+        "bag_review_end": "2026-12-03",
+        "bag_approval": "2026-12-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "251",
@@ -877,7 +977,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-03",
+        "bag_dev_end": "2028-01-13",
+        "bag_review_end": "2028-01-18",
+        "bag_approval": "2028-01-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "22",
@@ -895,7 +1000,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-17",
+        "bag_dev_end": "2026-08-27",
+        "bag_review_end": "2026-09-01",
+        "bag_approval": "2026-09-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "223",
@@ -913,7 +1023,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-11-29",
+        "bag_dev_end": "2027-12-09",
+        "bag_review_end": "2027-12-14",
+        "bag_approval": "2027-12-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "65",
@@ -931,7 +1046,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-28",
+        "bag_dev_end": "2027-01-07",
+        "bag_review_end": "2027-01-12",
+        "bag_approval": "2027-01-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "113",
@@ -949,7 +1069,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-12",
+        "bag_dev_end": "2027-04-22",
+        "bag_review_end": "2027-04-27",
+        "bag_approval": "2027-04-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "123",
@@ -967,7 +1092,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-05-03",
+        "bag_dev_end": "2027-05-13",
+        "bag_review_end": "2027-05-18",
+        "bag_approval": "2027-05-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "118",
@@ -985,7 +1115,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-14",
+        "bag_dev_end": "2027-04-24",
+        "bag_review_end": "2027-04-29",
+        "bag_approval": "2027-04-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "103",
@@ -1003,7 +1138,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-22",
+        "bag_dev_end": "2027-04-01",
+        "bag_review_end": "2027-04-06",
+        "bag_approval": "2027-04-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "108",
@@ -1021,7 +1161,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-24",
+        "bag_dev_end": "2027-04-03",
+        "bag_review_end": "2027-04-08",
+        "bag_approval": "2027-04-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "218",
@@ -1039,7 +1184,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-11-10",
+        "bag_dev_end": "2027-11-20",
+        "bag_review_end": "2027-11-25",
+        "bag_approval": "2027-11-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "3",
@@ -1057,7 +1207,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-06",
+        "bag_dev_end": "2026-07-16",
+        "bag_review_end": "2026-07-21",
+        "bag_approval": "2026-07-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "262",
@@ -1075,7 +1230,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-07",
+        "bag_dev_end": "2027-07-17",
+        "bag_review_end": "2027-07-22",
+        "bag_approval": "2027-07-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "289",
@@ -1093,7 +1253,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-04-03",
+        "bag_dev_end": "2028-04-13",
+        "bag_review_end": "2028-04-18",
+        "bag_approval": "2028-04-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "357",
@@ -1111,7 +1276,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-21",
+        "bag_dev_end": "2028-07-01",
+        "bag_review_end": "2028-07-06",
+        "bag_approval": "2028-07-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "314",
@@ -1129,7 +1299,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-03-08",
+        "bag_dev_end": "2028-03-18",
+        "bag_review_end": "2028-03-23",
+        "bag_approval": "2028-03-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "341",
@@ -1147,7 +1322,12 @@
         "program_cost": 50000.0,
         "travel_cost": 39696.0,
         "repetitions": 1,
-        "grand_total": 89696.0
+        "grand_total": 89696.0,
+        "bag_dev_start": "2026-07-16",
+        "bag_dev_end": "2026-07-26",
+        "bag_review_end": "2026-07-31",
+        "bag_approval": "2026-07-31",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "410",
@@ -1165,7 +1345,12 @@
         "program_cost": 50000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 50000.0
+        "grand_total": 50000.0,
+        "bag_dev_start": "2027-06-14",
+        "bag_dev_end": "2027-06-24",
+        "bag_review_end": "2027-06-29",
+        "bag_approval": "2027-06-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "71",
@@ -1183,7 +1368,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-21",
+        "bag_dev_end": "2026-12-31",
+        "bag_review_end": "2027-01-05",
+        "bag_approval": "2027-01-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "225",
@@ -1201,7 +1391,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-03",
+        "bag_dev_end": "2027-05-13",
+        "bag_review_end": "2027-05-18",
+        "bag_approval": "2027-05-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "340",
@@ -1219,7 +1414,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-23",
+        "bag_dev_end": "2026-12-03",
+        "bag_review_end": "2026-12-08",
+        "bag_approval": "2026-12-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "347",
@@ -1237,7 +1437,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-25",
+        "bag_dev_end": "2026-12-05",
+        "bag_review_end": "2026-12-10",
+        "bag_approval": "2026-12-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "354",
@@ -1255,7 +1460,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-14",
+        "bag_dev_end": "2026-12-24",
+        "bag_review_end": "2026-12-29",
+        "bag_approval": "2026-12-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "82",
@@ -1273,7 +1483,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-23",
+        "bag_dev_end": "2027-01-02",
+        "bag_review_end": "2027-01-07",
+        "bag_approval": "2027-01-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "87",
@@ -1291,7 +1506,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-11",
+        "bag_dev_end": "2027-01-21",
+        "bag_review_end": "2027-01-26",
+        "bag_approval": "2027-01-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "85",
@@ -1309,7 +1529,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-13",
+        "bag_dev_end": "2026-07-23",
+        "bag_review_end": "2026-07-28",
+        "bag_approval": "2026-07-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "395",
@@ -1327,7 +1552,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "220",
@@ -1345,7 +1575,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-14",
+        "bag_dev_end": "2027-04-24",
+        "bag_review_end": "2027-04-29",
+        "bag_approval": "2027-04-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "311",
@@ -1363,7 +1598,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2028-04-17",
+        "bag_dev_end": "2028-04-27",
+        "bag_review_end": "2028-05-02",
+        "bag_approval": "2028-05-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "96",
@@ -1381,7 +1621,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-03",
+        "bag_dev_end": "2027-02-13",
+        "bag_review_end": "2027-02-18",
+        "bag_approval": "2027-02-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "102",
@@ -1399,7 +1644,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-03",
+        "bag_dev_end": "2027-02-13",
+        "bag_review_end": "2027-02-18",
+        "bag_approval": "2027-02-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "231",
@@ -1417,7 +1667,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-22",
+        "bag_dev_end": "2027-12-02",
+        "bag_review_end": "2027-12-07",
+        "bag_approval": "2027-12-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "171",
@@ -1435,7 +1690,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-19",
+        "bag_dev_end": "2027-07-29",
+        "bag_review_end": "2027-08-03",
+        "bag_approval": "2027-08-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "131",
@@ -1453,7 +1713,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-26",
+        "bag_dev_end": "2027-05-06",
+        "bag_review_end": "2027-05-11",
+        "bag_approval": "2027-05-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "339",
@@ -1471,7 +1736,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-04-19",
+        "bag_dev_end": "2028-04-29",
+        "bag_review_end": "2028-05-04",
+        "bag_approval": "2028-05-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "197",
@@ -1489,7 +1759,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-30",
+        "bag_dev_end": "2027-09-09",
+        "bag_review_end": "2027-09-14",
+        "bag_approval": "2027-09-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "159",
@@ -1507,7 +1782,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-05-17",
+        "bag_dev_end": "2027-05-27",
+        "bag_review_end": "2027-06-01",
+        "bag_approval": "2027-06-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "92",
@@ -1525,7 +1805,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-13",
+        "bag_dev_end": "2027-01-23",
+        "bag_review_end": "2027-01-28",
+        "bag_approval": "2027-01-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "270",
@@ -1543,7 +1828,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-24",
+        "bag_dev_end": "2028-02-03",
+        "bag_review_end": "2028-02-08",
+        "bag_approval": "2028-02-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "401",
@@ -1561,7 +1851,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-15",
+        "bag_dev_end": "2027-02-25",
+        "bag_review_end": "2027-03-02",
+        "bag_approval": "2027-03-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "285",
@@ -1579,7 +1874,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-12",
+        "bag_dev_end": "2026-08-22",
+        "bag_review_end": "2026-08-27",
+        "bag_approval": "2026-08-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "381",
@@ -1597,7 +1897,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-31",
+        "bag_dev_end": "2028-08-10",
+        "bag_review_end": "2028-08-15",
+        "bag_approval": "2028-08-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "37",
@@ -1615,7 +1920,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-07",
+        "bag_dev_end": "2026-10-17",
+        "bag_review_end": "2026-10-22",
+        "bag_approval": "2026-10-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "243",
@@ -1633,7 +1943,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-10",
+        "bag_dev_end": "2028-01-20",
+        "bag_review_end": "2028-01-25",
+        "bag_approval": "2028-01-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "297",
@@ -1651,7 +1966,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-02",
+        "bag_dev_end": "2026-09-12",
+        "bag_review_end": "2026-09-17",
+        "bag_approval": "2026-09-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "303",
@@ -1669,7 +1989,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-21",
+        "bag_dev_end": "2026-10-01",
+        "bag_review_end": "2026-10-06",
+        "bag_approval": "2026-10-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "417",
@@ -1687,7 +2012,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-08",
+        "bag_dev_end": "2027-03-18",
+        "bag_review_end": "2027-03-23",
+        "bag_approval": "2027-03-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "291",
@@ -1705,7 +2035,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-31",
+        "bag_dev_end": "2026-09-10",
+        "bag_review_end": "2026-09-15",
+        "bag_approval": "2026-09-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "204",
@@ -1723,7 +2058,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-08-11",
+        "bag_dev_end": "2027-08-21",
+        "bag_review_end": "2027-08-26",
+        "bag_approval": "2027-08-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "224",
@@ -1741,7 +2081,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-22",
+        "bag_dev_end": "2027-10-02",
+        "bag_review_end": "2027-10-07",
+        "bag_approval": "2027-10-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "189",
@@ -1759,7 +2104,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-07-19",
+        "bag_dev_end": "2027-07-29",
+        "bag_review_end": "2027-08-03",
+        "bag_approval": "2027-08-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "209",
@@ -1777,7 +2127,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-08-30",
+        "bag_dev_end": "2027-09-09",
+        "bag_review_end": "2027-09-14",
+        "bag_approval": "2027-09-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "194",
@@ -1795,7 +2150,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-07-21",
+        "bag_dev_end": "2027-07-31",
+        "bag_review_end": "2027-08-05",
+        "bag_approval": "2027-08-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "214",
@@ -1813,7 +2173,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-01",
+        "bag_dev_end": "2027-09-11",
+        "bag_review_end": "2027-09-16",
+        "bag_approval": "2027-09-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "199",
@@ -1831,7 +2196,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-08-09",
+        "bag_dev_end": "2027-08-19",
+        "bag_review_end": "2027-08-24",
+        "bag_approval": "2027-08-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "219",
@@ -1849,7 +2219,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-20",
+        "bag_dev_end": "2027-09-30",
+        "bag_review_end": "2027-10-05",
+        "bag_approval": "2027-10-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "353",
@@ -1867,7 +2242,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-05-10",
+        "bag_dev_end": "2028-05-20",
+        "bag_review_end": "2028-05-25",
+        "bag_approval": "2028-05-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "132",
@@ -1885,7 +2265,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-07",
+        "bag_dev_end": "2027-04-17",
+        "bag_review_end": "2027-04-22",
+        "bag_approval": "2027-04-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "239",
@@ -1903,7 +2288,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-11-01",
+        "bag_dev_end": "2027-11-11",
+        "bag_review_end": "2027-11-16",
+        "bag_approval": "2027-11-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "76",
@@ -1921,7 +2311,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-23",
+        "bag_dev_end": "2027-01-02",
+        "bag_review_end": "2027-01-07",
+        "bag_approval": "2027-01-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "387",
@@ -1939,7 +2334,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-08",
+        "bag_dev_end": "2026-06-18",
+        "bag_review_end": "2026-06-23",
+        "bag_approval": "2026-06-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "363",
@@ -1957,7 +2357,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-01",
+        "bag_dev_end": "2026-06-11",
+        "bag_review_end": "2026-06-16",
+        "bag_approval": "2026-06-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "355",
@@ -1975,7 +2380,12 @@
         "program_cost": 50000.0,
         "travel_cost": 45573.0,
         "repetitions": 1,
-        "grand_total": 95573.0
+        "grand_total": 95573.0,
+        "bag_dev_start": "2027-03-24",
+        "bag_dev_end": "2027-04-03",
+        "bag_review_end": "2027-04-08",
+        "bag_approval": "2027-04-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "271",
@@ -1993,7 +2403,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-02-23",
+        "bag_dev_end": "2028-03-04",
+        "bag_review_end": "2028-03-09",
+        "bag_approval": "2028-03-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "88",
@@ -2011,7 +2426,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-10",
+        "bag_dev_end": "2027-02-20",
+        "bag_review_end": "2027-02-25",
+        "bag_approval": "2027-02-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "386",
@@ -2029,7 +2449,12 @@
         "program_cost": 50000.0,
         "travel_cost": 57327.0,
         "repetitions": 1,
-        "grand_total": 107327.0
+        "grand_total": 107327.0,
+        "bag_dev_start": "2027-05-05",
+        "bag_dev_end": "2027-05-15",
+        "bag_review_end": "2027-05-20",
+        "bag_approval": "2027-05-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "48",
@@ -2047,7 +2472,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-30",
+        "bag_dev_end": "2026-10-10",
+        "bag_review_end": "2026-10-15",
+        "bag_approval": "2026-10-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "371",
@@ -2065,7 +2495,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-01",
+        "bag_dev_end": "2026-06-11",
+        "bag_review_end": "2026-06-16",
+        "bag_approval": "2026-06-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "348",
@@ -2083,7 +2518,12 @@
         "program_cost": 50000.0,
         "travel_cost": 45573.0,
         "repetitions": 1,
-        "grand_total": 95573.0
+        "grand_total": 95573.0,
+        "bag_dev_start": "2027-03-22",
+        "bag_dev_end": "2027-04-01",
+        "bag_review_end": "2027-04-06",
+        "bag_approval": "2027-04-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "86",
@@ -2101,7 +2541,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-13",
+        "bag_dev_end": "2027-01-23",
+        "bag_review_end": "2027-01-28",
+        "bag_approval": "2027-01-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "117",
@@ -2119,7 +2564,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-15",
+        "bag_dev_end": "2027-03-25",
+        "bag_review_end": "2027-03-30",
+        "bag_approval": "2027-03-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "193",
@@ -2137,7 +2587,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-27",
+        "bag_dev_end": "2027-10-07",
+        "bag_review_end": "2027-10-12",
+        "bag_approval": "2027-10-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "414",
@@ -2155,7 +2610,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-23",
+        "bag_dev_end": "2028-09-02",
+        "bag_review_end": "2028-09-07",
+        "bag_approval": "2028-09-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "30",
@@ -2173,7 +2633,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-16",
+        "bag_dev_end": "2026-09-26",
+        "bag_review_end": "2026-10-01",
+        "bag_approval": "2026-10-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "148",
@@ -2191,7 +2656,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-06-16",
+        "bag_dev_end": "2027-06-26",
+        "bag_review_end": "2027-07-01",
+        "bag_approval": "2027-07-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "372",
@@ -2209,7 +2679,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-10",
+        "bag_dev_end": "2028-01-20",
+        "bag_review_end": "2028-01-25",
+        "bag_approval": "2028-01-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "190",
@@ -2227,7 +2702,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-10",
+        "bag_dev_end": "2027-02-20",
+        "bag_review_end": "2027-02-25",
+        "bag_approval": "2027-02-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "141",
@@ -2245,7 +2725,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-17",
+        "bag_dev_end": "2027-05-27",
+        "bag_review_end": "2027-06-01",
+        "bag_approval": "2027-06-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "361",
@@ -2263,7 +2748,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 3,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-16",
+        "bag_dev_end": "2026-12-26",
+        "bag_review_end": "2026-12-31",
+        "bag_approval": "2026-12-31",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "327",
@@ -2281,7 +2771,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-02",
+        "bag_dev_end": "2026-11-12",
+        "bag_review_end": "2026-11-17",
+        "bag_approval": "2026-11-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "20",
@@ -2299,7 +2794,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2026-07-06",
+        "bag_dev_end": "2026-07-16",
+        "bag_review_end": "2026-07-21",
+        "bag_approval": "2026-07-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "221",
@@ -2317,7 +2817,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-11-01",
+        "bag_dev_end": "2027-11-11",
+        "bag_review_end": "2027-11-16",
+        "bag_approval": "2027-11-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "367",
@@ -2335,7 +2840,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-08-07",
+        "bag_dev_end": "2028-08-17",
+        "bag_review_end": "2028-08-22",
+        "bag_approval": "2028-08-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "345",
@@ -2353,7 +2863,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-28",
+        "bag_dev_end": "2028-07-08",
+        "bag_review_end": "2028-07-13",
+        "bag_approval": "2028-07-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "277",
@@ -2371,7 +2886,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-03-13",
+        "bag_dev_end": "2028-03-23",
+        "bag_review_end": "2028-03-28",
+        "bag_approval": "2028-03-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "383",
@@ -2389,7 +2909,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-08-28",
+        "bag_dev_end": "2028-09-07",
+        "bag_review_end": "2028-09-12",
+        "bag_approval": "2028-09-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "55",
@@ -2407,7 +2932,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-09",
+        "bag_dev_end": "2026-11-19",
+        "bag_review_end": "2026-11-24",
+        "bag_approval": "2026-11-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "100",
@@ -2425,7 +2955,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-05",
+        "bag_dev_end": "2026-08-15",
+        "bag_review_end": "2026-08-20",
+        "bag_approval": "2026-08-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "316",
@@ -2443,7 +2978,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-10-18",
+        "bag_dev_end": "2027-10-28",
+        "bag_review_end": "2027-11-02",
+        "bag_approval": "2027-11-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "362",
@@ -2461,7 +3001,12 @@
         "program_cost": 50000.0,
         "travel_cost": 205078.5,
         "repetitions": 1,
-        "grand_total": 255078.5
+        "grand_total": 255078.5,
+        "bag_dev_start": "2027-04-12",
+        "bag_dev_end": "2027-04-22",
+        "bag_review_end": "2027-04-27",
+        "bag_approval": "2027-04-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "416",
@@ -2479,7 +3024,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-08-02",
+        "bag_dev_end": "2028-08-12",
+        "bag_review_end": "2028-08-17",
+        "bag_approval": "2028-08-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "267",
@@ -2497,7 +3047,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-20",
+        "bag_dev_end": "2026-07-30",
+        "bag_review_end": "2026-08-04",
+        "bag_approval": "2026-08-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "261",
@@ -2515,7 +3070,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-01",
+        "bag_dev_end": "2026-07-11",
+        "bag_review_end": "2026-07-16",
+        "bag_approval": "2026-07-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "212",
@@ -2533,7 +3093,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-22",
+        "bag_dev_end": "2027-10-02",
+        "bag_review_end": "2027-10-07",
+        "bag_approval": "2027-10-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "213",
@@ -2551,7 +3116,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-11-08",
+        "bag_dev_end": "2027-11-18",
+        "bag_review_end": "2027-11-23",
+        "bag_approval": "2027-11-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "282",
@@ -2569,7 +3139,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-14",
+        "bag_dev_end": "2028-02-24",
+        "bag_review_end": "2028-02-29",
+        "bag_approval": "2028-02-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "178",
@@ -2587,7 +3162,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-08-18",
+        "bag_dev_end": "2027-08-28",
+        "bag_review_end": "2027-09-02",
+        "bag_approval": "2027-09-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "274",
@@ -2605,7 +3185,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-28",
+        "bag_dev_end": "2027-08-07",
+        "bag_review_end": "2027-08-12",
+        "bag_approval": "2027-08-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "343",
@@ -2623,7 +3208,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-31",
+        "bag_dev_end": "2028-06-10",
+        "bag_review_end": "2028-06-15",
+        "bag_approval": "2028-06-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "322",
@@ -2641,7 +3231,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-10-20",
+        "bag_dev_end": "2027-10-30",
+        "bag_review_end": "2027-11-04",
+        "bag_approval": "2027-11-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "333",
@@ -2659,7 +3254,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2026-11-04",
+        "bag_dev_end": "2026-11-14",
+        "bag_review_end": "2026-11-19",
+        "bag_approval": "2026-11-19",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "228",
@@ -2677,7 +3277,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-12-01",
+        "bag_dev_end": "2027-12-11",
+        "bag_review_end": "2027-12-16",
+        "bag_approval": "2027-12-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "246",
@@ -2695,7 +3300,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-15",
+        "bag_dev_end": "2027-12-25",
+        "bag_review_end": "2027-12-30",
+        "bag_approval": "2027-12-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "302",
@@ -2713,7 +3323,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-02-16",
+        "bag_dev_end": "2028-02-26",
+        "bag_review_end": "2028-03-02",
+        "bag_approval": "2028-03-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "21",
@@ -2731,7 +3346,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-24",
+        "bag_dev_end": "2026-09-03",
+        "bag_review_end": "2026-09-08",
+        "bag_approval": "2026-09-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "400",
@@ -2749,7 +3369,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-07-12",
+        "bag_dev_end": "2028-07-22",
+        "bag_review_end": "2028-07-27",
+        "bag_approval": "2028-07-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "360",
@@ -2767,7 +3392,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-05-29",
+        "bag_dev_end": "2028-06-08",
+        "bag_review_end": "2028-06-13",
+        "bag_approval": "2028-06-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "179",
@@ -2785,7 +3415,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-06-28",
+        "bag_dev_end": "2027-07-08",
+        "bag_review_end": "2027-07-13",
+        "bag_approval": "2027-07-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "8",
@@ -2803,7 +3438,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-13",
+        "bag_dev_end": "2026-07-23",
+        "bag_review_end": "2026-07-28",
+        "bag_approval": "2026-07-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "24",
@@ -2821,7 +3461,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-26",
+        "bag_dev_end": "2026-09-05",
+        "bag_review_end": "2026-09-10",
+        "bag_approval": "2026-09-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "253",
@@ -2839,7 +3484,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-31",
+        "bag_dev_end": "2028-02-10",
+        "bag_review_end": "2028-02-15",
+        "bag_approval": "2028-02-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "34",
@@ -2857,7 +3507,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-05",
+        "bag_dev_end": "2026-10-15",
+        "bag_review_end": "2026-10-20",
+        "bag_approval": "2026-10-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "254",
@@ -2875,7 +3530,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-11-24",
+        "bag_dev_end": "2027-12-04",
+        "bag_review_end": "2027-12-09",
+        "bag_approval": "2027-12-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "133",
@@ -2893,7 +3553,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-05-24",
+        "bag_dev_end": "2027-06-03",
+        "bag_review_end": "2027-06-08",
+        "bag_approval": "2027-06-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "412",
@@ -2911,7 +3576,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-23",
+        "bag_dev_end": "2028-03-04",
+        "bag_review_end": "2028-03-09",
+        "bag_approval": "2028-03-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "305",
@@ -2929,7 +3599,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-29",
+        "bag_dev_end": "2028-04-08",
+        "bag_review_end": "2028-04-13",
+        "bag_approval": "2028-04-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "51",
@@ -2947,7 +3622,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-21",
+        "bag_dev_end": "2026-10-31",
+        "bag_review_end": "2026-11-05",
+        "bag_approval": "2026-11-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "206",
@@ -2965,7 +3645,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-22",
+        "bag_dev_end": "2027-10-02",
+        "bag_review_end": "2027-10-07",
+        "bag_approval": "2027-10-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "140",
@@ -2983,7 +3668,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-28",
+        "bag_dev_end": "2026-11-07",
+        "bag_review_end": "2026-11-12",
+        "bag_approval": "2026-11-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "356",
@@ -3001,7 +3691,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-20",
+        "bag_dev_end": "2027-12-30",
+        "bag_review_end": "2028-01-04",
+        "bag_approval": "2028-01-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "13",
@@ -3019,7 +3714,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-27",
+        "bag_dev_end": "2026-08-06",
+        "bag_review_end": "2026-08-11",
+        "bag_approval": "2026-08-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "98",
@@ -3037,7 +3737,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-03",
+        "bag_dev_end": "2027-03-13",
+        "bag_review_end": "2027-03-18",
+        "bag_approval": "2027-03-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "365",
@@ -3055,7 +3760,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-10",
+        "bag_dev_end": "2028-07-20",
+        "bag_review_end": "2028-07-25",
+        "bag_approval": "2028-07-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "174",
@@ -3073,7 +3783,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-06-09",
+        "bag_dev_end": "2027-06-19",
+        "bag_review_end": "2027-06-24",
+        "bag_approval": "2027-06-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "324",
@@ -3091,7 +3806,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-04-19",
+        "bag_dev_end": "2028-04-29",
+        "bag_review_end": "2028-05-04",
+        "bag_approval": "2028-05-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "143",
@@ -3109,7 +3829,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-06-14",
+        "bag_dev_end": "2027-06-24",
+        "bag_review_end": "2027-06-29",
+        "bag_approval": "2027-06-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "248",
@@ -3127,7 +3852,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-12",
+        "bag_dev_end": "2028-01-22",
+        "bag_review_end": "2028-01-27",
+        "bag_approval": "2028-01-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "15",
@@ -3145,7 +3875,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-08",
+        "bag_dev_end": "2026-07-18",
+        "bag_review_end": "2026-07-23",
+        "bag_approval": "2026-07-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "181",
@@ -3163,7 +3898,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-09",
+        "bag_dev_end": "2027-08-19",
+        "bag_review_end": "2027-08-24",
+        "bag_approval": "2027-08-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "342",
@@ -3181,7 +3921,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-29",
+        "bag_dev_end": "2027-12-09",
+        "bag_review_end": "2027-12-14",
+        "bag_approval": "2027-12-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "25",
@@ -3199,7 +3944,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-08",
+        "bag_dev_end": "2026-07-18",
+        "bag_review_end": "2026-07-23",
+        "bag_approval": "2026-07-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "169",
@@ -3217,7 +3967,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-06-07",
+        "bag_dev_end": "2027-06-17",
+        "bag_review_end": "2027-06-22",
+        "bag_approval": "2027-06-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "188",
@@ -3235,7 +3990,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-08",
+        "bag_dev_end": "2027-09-18",
+        "bag_review_end": "2027-09-23",
+        "bag_approval": "2027-09-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "146",
@@ -3253,7 +4013,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-19",
+        "bag_dev_end": "2027-05-29",
+        "bag_review_end": "2027-06-03",
+        "bag_approval": "2027-06-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "9",
@@ -3271,7 +4036,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-17",
+        "bag_dev_end": "2026-06-27",
+        "bag_review_end": "2026-07-02",
+        "bag_approval": "2026-07-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "275",
@@ -3289,7 +4059,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-14",
+        "bag_dev_end": "2028-02-24",
+        "bag_review_end": "2028-02-29",
+        "bag_approval": "2028-02-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "150",
@@ -3307,7 +4082,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-18",
+        "bag_dev_end": "2026-11-28",
+        "bag_review_end": "2026-12-03",
+        "bag_approval": "2026-12-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "335",
@@ -3325,7 +4105,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-10",
+        "bag_dev_end": "2027-11-20",
+        "bag_review_end": "2027-11-25",
+        "bag_approval": "2027-11-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "121",
@@ -3343,7 +4128,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-05",
+        "bag_dev_end": "2027-04-15",
+        "bag_review_end": "2027-04-20",
+        "bag_approval": "2027-04-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "405",
@@ -3361,7 +4151,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-23",
+        "bag_dev_end": "2028-09-02",
+        "bag_review_end": "2028-09-07",
+        "bag_approval": "2028-09-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "263",
@@ -3379,7 +4174,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-24",
+        "bag_dev_end": "2028-02-03",
+        "bag_review_end": "2028-02-08",
+        "bag_approval": "2028-02-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "216",
@@ -3397,7 +4197,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-10-13",
+        "bag_dev_end": "2027-10-23",
+        "bag_review_end": "2027-10-28",
+        "bag_approval": "2027-10-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "326",
@@ -3415,7 +4220,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-03-29",
+        "bag_dev_end": "2028-04-08",
+        "bag_review_end": "2028-04-13",
+        "bag_approval": "2028-04-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "95",
@@ -3433,7 +4243,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-03",
+        "bag_dev_end": "2026-08-13",
+        "bag_review_end": "2026-08-18",
+        "bag_approval": "2026-08-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "364",
@@ -3451,7 +4266,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-22",
+        "bag_dev_end": "2028-01-01",
+        "bag_review_end": "2028-01-06",
+        "bag_approval": "2028-01-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "170",
@@ -3469,7 +4289,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-30",
+        "bag_dev_end": "2027-01-09",
+        "bag_review_end": "2027-01-14",
+        "bag_approval": "2027-01-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "392",
@@ -3487,7 +4312,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-07-10",
+        "bag_dev_end": "2028-07-20",
+        "bag_review_end": "2028-07-25",
+        "bag_approval": "2028-07-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "26",
@@ -3505,7 +4335,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-19",
+        "bag_dev_end": "2026-08-29",
+        "bag_review_end": "2026-09-03",
+        "bag_approval": "2026-09-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "236",
@@ -3523,7 +4358,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-24",
+        "bag_dev_end": "2027-12-04",
+        "bag_review_end": "2027-12-09",
+        "bag_approval": "2027-12-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "287",
@@ -3541,7 +4381,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-06",
+        "bag_dev_end": "2028-03-16",
+        "bag_review_end": "2028-03-21",
+        "bag_approval": "2028-03-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "201",
@@ -3559,7 +4404,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-20",
+        "bag_dev_end": "2027-09-30",
+        "bag_review_end": "2027-10-05",
+        "bag_approval": "2027-10-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "332",
@@ -3577,7 +4427,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-04-17",
+        "bag_dev_end": "2028-04-27",
+        "bag_review_end": "2028-05-02",
+        "bag_approval": "2028-05-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "368",
@@ -3595,7 +4450,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-05-31",
+        "bag_dev_end": "2028-06-10",
+        "bag_review_end": "2028-06-15",
+        "bag_approval": "2028-06-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "186",
@@ -3613,7 +4473,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-11",
+        "bag_dev_end": "2027-08-21",
+        "bag_review_end": "2027-08-26",
+        "bag_approval": "2027-08-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "388",
@@ -3631,7 +4496,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-31",
+        "bag_dev_end": "2028-02-10",
+        "bag_review_end": "2028-02-15",
+        "bag_approval": "2028-02-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "160",
@@ -3649,7 +4519,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-09",
+        "bag_dev_end": "2026-12-19",
+        "bag_review_end": "2026-12-24",
+        "bag_approval": "2026-12-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "115",
@@ -3667,7 +4542,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-14",
+        "bag_dev_end": "2026-09-24",
+        "bag_review_end": "2026-09-29",
+        "bag_approval": "2026-09-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "135",
@@ -3685,7 +4565,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-26",
+        "bag_dev_end": "2026-11-05",
+        "bag_review_end": "2026-11-10",
+        "bag_approval": "2026-11-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "40",
@@ -3703,7 +4588,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-09",
+        "bag_dev_end": "2026-09-19",
+        "bag_review_end": "2026-09-24",
+        "bag_approval": "2026-09-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "366",
@@ -3721,7 +4611,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-06-21",
+        "bag_dev_end": "2028-07-01",
+        "bag_review_end": "2028-07-06",
+        "bag_approval": "2028-07-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "370",
@@ -3739,7 +4634,12 @@
         "program_cost": 50000.0,
         "travel_cost": 205078.5,
         "repetitions": 1,
-        "grand_total": 255078.5
+        "grand_total": 255078.5,
+        "bag_dev_start": "2027-04-14",
+        "bag_dev_end": "2027-04-24",
+        "bag_review_end": "2027-04-29",
+        "bag_approval": "2027-04-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "294",
@@ -3757,7 +4657,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-06",
+        "bag_dev_end": "2028-03-16",
+        "bag_review_end": "2028-03-21",
+        "bag_approval": "2028-03-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "312",
@@ -3775,7 +4680,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-29",
+        "bag_dev_end": "2028-04-08",
+        "bag_review_end": "2028-04-13",
+        "bag_approval": "2028-04-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "300",
@@ -3793,7 +4703,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-08",
+        "bag_dev_end": "2028-03-18",
+        "bag_review_end": "2028-03-23",
+        "bag_approval": "2028-03-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "403",
@@ -3811,7 +4726,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "230",
@@ -3829,7 +4749,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-05",
+        "bag_dev_end": "2027-05-15",
+        "bag_review_end": "2027-05-20",
+        "bag_approval": "2027-05-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "7",
@@ -3847,7 +4772,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 3,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-08",
+        "bag_dev_end": "2026-07-18",
+        "bag_review_end": "2026-07-23",
+        "bag_approval": "2026-07-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "126",
@@ -3865,7 +4795,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-07",
+        "bag_dev_end": "2027-04-17",
+        "bag_review_end": "2027-04-22",
+        "bag_approval": "2027-04-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "308",
@@ -3883,7 +4818,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-03-06",
+        "bag_dev_end": "2028-03-16",
+        "bag_review_end": "2028-03-21",
+        "bag_approval": "2028-03-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "32",
@@ -3901,7 +4841,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-19",
+        "bag_dev_end": "2026-08-29",
+        "bag_review_end": "2026-09-03",
+        "bag_approval": "2026-09-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "35",
@@ -3919,7 +4864,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-09",
+        "bag_dev_end": "2026-09-19",
+        "bag_review_end": "2026-09-24",
+        "bag_approval": "2026-09-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "245",
@@ -3937,7 +4887,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2027-06-14",
+        "bag_dev_end": "2027-06-24",
+        "bag_review_end": "2027-06-29",
+        "bag_approval": "2027-06-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "19",
@@ -3955,7 +4910,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-27",
+        "bag_dev_end": "2026-08-06",
+        "bag_review_end": "2026-08-11",
+        "bag_approval": "2026-08-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "321",
@@ -3973,7 +4933,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 3,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-14",
+        "bag_dev_end": "2026-10-24",
+        "bag_review_end": "2026-10-29",
+        "bag_approval": "2026-10-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "90",
@@ -3991,7 +4956,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-15",
+        "bag_dev_end": "2026-07-25",
+        "bag_review_end": "2026-07-30",
+        "bag_approval": "2026-07-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "278",
@@ -4009,7 +4979,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-05",
+        "bag_dev_end": "2028-01-15",
+        "bag_review_end": "2028-01-20",
+        "bag_approval": "2028-01-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "200",
@@ -4027,7 +5002,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-03",
+        "bag_dev_end": "2027-03-13",
+        "bag_review_end": "2027-03-18",
+        "bag_approval": "2027-03-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "93",
@@ -4045,7 +5025,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-03-01",
+        "bag_dev_end": "2027-03-11",
+        "bag_review_end": "2027-03-16",
+        "bag_approval": "2027-03-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "384",
@@ -4063,7 +5048,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-21",
+        "bag_dev_end": "2028-07-01",
+        "bag_review_end": "2028-07-06",
+        "bag_approval": "2028-07-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "237",
@@ -4081,7 +5071,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-22",
+        "bag_dev_end": "2027-12-02",
+        "bag_review_end": "2027-12-07",
+        "bag_approval": "2027-12-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "112",
@@ -4099,7 +5094,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-24",
+        "bag_dev_end": "2027-03-06",
+        "bag_review_end": "2027-03-11",
+        "bag_approval": "2027-03-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "247",
@@ -4117,7 +5117,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-13",
+        "bag_dev_end": "2027-12-23",
+        "bag_review_end": "2027-12-28",
+        "bag_approval": "2027-12-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "182",
@@ -4135,7 +5140,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-07-21",
+        "bag_dev_end": "2027-07-31",
+        "bag_review_end": "2027-08-05",
+        "bag_approval": "2027-08-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "158",
@@ -4153,7 +5163,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-07-07",
+        "bag_dev_end": "2027-07-17",
+        "bag_review_end": "2027-07-22",
+        "bag_approval": "2027-07-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "107",
@@ -4171,7 +5186,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-22",
+        "bag_dev_end": "2027-03-04",
+        "bag_review_end": "2027-03-09",
+        "bag_approval": "2027-03-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "286",
@@ -4189,7 +5209,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-18",
+        "bag_dev_end": "2027-08-28",
+        "bag_review_end": "2027-09-02",
+        "bag_approval": "2027-09-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "242",
@@ -4207,7 +5232,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-24",
+        "bag_dev_end": "2027-12-04",
+        "bag_review_end": "2027-12-09",
+        "bag_approval": "2027-12-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "147",
@@ -4225,7 +5255,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-17",
+        "bag_dev_end": "2027-05-27",
+        "bag_review_end": "2027-06-01",
+        "bag_approval": "2027-06-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "130",
@@ -4243,7 +5278,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-07",
+        "bag_dev_end": "2026-10-17",
+        "bag_review_end": "2026-10-22",
+        "bag_approval": "2026-10-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "83",
@@ -4261,7 +5301,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-02-08",
+        "bag_dev_end": "2027-02-18",
+        "bag_review_end": "2027-02-23",
+        "bag_approval": "2027-02-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "162",
@@ -4279,7 +5324,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-09",
+        "bag_dev_end": "2027-06-19",
+        "bag_review_end": "2027-06-24",
+        "bag_approval": "2027-06-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "211",
@@ -4297,7 +5347,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-10-11",
+        "bag_dev_end": "2027-10-21",
+        "bag_review_end": "2027-10-26",
+        "bag_approval": "2027-10-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "255",
@@ -4315,7 +5370,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-29",
+        "bag_dev_end": "2026-07-09",
+        "bag_review_end": "2026-07-14",
+        "bag_approval": "2026-07-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "241",
@@ -4333,7 +5393,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-13",
+        "bag_dev_end": "2027-12-23",
+        "bag_review_end": "2027-12-28",
+        "bag_approval": "2027-12-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "111",
@@ -4351,7 +5416,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-15",
+        "bag_dev_end": "2027-03-25",
+        "bag_review_end": "2027-03-30",
+        "bag_approval": "2027-03-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "52",
@@ -4369,7 +5439,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-19",
+        "bag_dev_end": "2026-10-29",
+        "bag_review_end": "2026-11-03",
+        "bag_approval": "2026-11-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "210",
@@ -4387,7 +5462,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-24",
+        "bag_dev_end": "2027-04-03",
+        "bag_review_end": "2027-04-08",
+        "bag_approval": "2027-04-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "292",
@@ -4405,7 +5485,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-06",
+        "bag_dev_end": "2027-09-16",
+        "bag_review_end": "2027-09-21",
+        "bag_approval": "2027-09-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "47",
@@ -4423,7 +5508,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-19",
+        "bag_dev_end": "2026-10-29",
+        "bag_review_end": "2026-11-03",
+        "bag_approval": "2026-11-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "252",
@@ -4441,7 +5531,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-12-15",
+        "bag_dev_end": "2027-12-25",
+        "bag_review_end": "2027-12-30",
+        "bag_approval": "2027-12-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "180",
@@ -4459,7 +5554,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-20",
+        "bag_dev_end": "2027-01-30",
+        "bag_review_end": "2027-02-04",
+        "bag_approval": "2027-02-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "101",
@@ -4477,7 +5577,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-22",
+        "bag_dev_end": "2027-03-04",
+        "bag_review_end": "2027-03-09",
+        "bag_approval": "2027-03-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "226",
@@ -4495,7 +5600,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-03",
+        "bag_dev_end": "2027-11-13",
+        "bag_review_end": "2027-11-18",
+        "bag_approval": "2027-11-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "191",
@@ -4513,7 +5623,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-30",
+        "bag_dev_end": "2027-09-09",
+        "bag_review_end": "2027-09-14",
+        "bag_approval": "2027-09-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "151",
@@ -4531,7 +5646,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-07",
+        "bag_dev_end": "2027-06-17",
+        "bag_review_end": "2027-06-22",
+        "bag_approval": "2027-06-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "2",
@@ -4549,7 +5669,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "176",
@@ -4567,7 +5692,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-21",
+        "bag_dev_end": "2027-07-31",
+        "bag_review_end": "2027-08-05",
+        "bag_approval": "2027-08-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "80",
@@ -4585,7 +5715,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-24",
+        "bag_dev_end": "2026-07-04",
+        "bag_review_end": "2026-07-09",
+        "bag_approval": "2026-07-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "257",
@@ -4603,7 +5738,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-05",
+        "bag_dev_end": "2028-01-15",
+        "bag_review_end": "2028-01-20",
+        "bag_approval": "2028-01-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "195",
@@ -4621,7 +5761,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-01",
+        "bag_dev_end": "2027-03-11",
+        "bag_review_end": "2027-03-16",
+        "bag_approval": "2027-03-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "172",
@@ -4639,7 +5784,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-30",
+        "bag_dev_end": "2027-07-10",
+        "bag_review_end": "2027-07-15",
+        "bag_approval": "2027-07-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "136",
@@ -4657,7 +5807,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-28",
+        "bag_dev_end": "2027-05-08",
+        "bag_review_end": "2027-05-13",
+        "bag_approval": "2027-05-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "166",
@@ -4675,7 +5830,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-30",
+        "bag_dev_end": "2027-07-10",
+        "bag_review_end": "2027-07-15",
+        "bag_approval": "2027-07-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "122",
@@ -4693,7 +5853,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-17",
+        "bag_dev_end": "2027-03-27",
+        "bag_review_end": "2027-04-01",
+        "bag_approval": "2027-04-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "298",
@@ -4711,7 +5876,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-08",
+        "bag_dev_end": "2027-09-18",
+        "bag_review_end": "2027-09-23",
+        "bag_approval": "2027-09-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "31",
@@ -4729,7 +5899,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-07",
+        "bag_dev_end": "2026-09-17",
+        "bag_review_end": "2026-09-22",
+        "bag_approval": "2026-09-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "75",
@@ -4747,7 +5922,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-22",
+        "bag_dev_end": "2026-07-02",
+        "bag_review_end": "2026-07-07",
+        "bag_approval": "2026-07-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "81",
@@ -4765,7 +5945,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-11",
+        "bag_dev_end": "2027-01-21",
+        "bag_review_end": "2027-01-26",
+        "bag_approval": "2027-01-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "105",
@@ -4783,7 +5968,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-24",
+        "bag_dev_end": "2026-09-03",
+        "bag_review_end": "2026-09-08",
+        "bag_approval": "2026-09-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "177",
@@ -4801,7 +5991,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-19",
+        "bag_dev_end": "2027-07-29",
+        "bag_review_end": "2027-08-03",
+        "bag_approval": "2027-08-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "1",
@@ -4819,7 +6014,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-22",
+        "bag_dev_end": "2026-07-02",
+        "bag_review_end": "2026-07-07",
+        "bag_approval": "2026-07-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "259",
@@ -4837,7 +6037,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-02-02",
+        "bag_dev_end": "2028-02-12",
+        "bag_review_end": "2028-02-17",
+        "bag_approval": "2028-02-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "264",
@@ -4855,7 +6060,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-05",
+        "bag_dev_end": "2028-01-15",
+        "bag_review_end": "2028-01-20",
+        "bag_approval": "2028-01-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "78",
@@ -4873,7 +6083,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-01-20",
+        "bag_dev_end": "2027-01-30",
+        "bag_review_end": "2027-02-04",
+        "bag_approval": "2027-02-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "205",
@@ -4891,7 +6106,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-22",
+        "bag_dev_end": "2027-04-01",
+        "bag_review_end": "2027-04-06",
+        "bag_approval": "2027-04-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "175",
@@ -4909,7 +6129,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-01-18",
+        "bag_dev_end": "2027-01-28",
+        "bag_review_end": "2027-02-02",
+        "bag_approval": "2027-02-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "4",
@@ -4927,7 +6152,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "359",
@@ -4945,7 +6175,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-07-19",
+        "bag_dev_end": "2028-07-29",
+        "bag_review_end": "2028-08-03",
+        "bag_approval": "2028-08-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "283",
@@ -4963,7 +6198,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-03-15",
+        "bag_dev_end": "2028-03-25",
+        "bag_review_end": "2028-03-30",
+        "bag_approval": "2028-03-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "407",
@@ -4981,7 +6221,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-09-20",
+        "bag_dev_end": "2028-09-30",
+        "bag_review_end": "2028-10-05",
+        "bag_approval": "2028-10-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "45",
@@ -4999,7 +6244,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-28",
+        "bag_dev_end": "2026-11-07",
+        "bag_review_end": "2026-11-12",
+        "bag_approval": "2026-11-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "49",
@@ -5017,7 +6267,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-16",
+        "bag_dev_end": "2026-11-26",
+        "bag_review_end": "2026-12-01",
+        "bag_approval": "2026-12-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "41",
@@ -5035,7 +6290,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-26",
+        "bag_dev_end": "2026-11-05",
+        "bag_review_end": "2026-11-10",
+        "bag_approval": "2026-11-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "183",
@@ -5053,7 +6313,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-06",
+        "bag_dev_end": "2027-09-16",
+        "bag_review_end": "2027-09-21",
+        "bag_approval": "2027-09-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "389",
@@ -5071,7 +6336,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-02",
+        "bag_dev_end": "2028-08-12",
+        "bag_review_end": "2028-08-17",
+        "bag_approval": "2028-08-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "229",
@@ -5089,7 +6359,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-10-11",
+        "bag_dev_end": "2027-10-21",
+        "bag_review_end": "2027-10-26",
+        "bag_approval": "2027-10-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "128",
@@ -5107,7 +6382,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-05-05",
+        "bag_dev_end": "2027-05-15",
+        "bag_review_end": "2027-05-20",
+        "bag_approval": "2027-05-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "350",
@@ -5125,7 +6405,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-19",
+        "bag_dev_end": "2028-06-29",
+        "bag_review_end": "2028-07-04",
+        "bag_approval": "2028-07-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "404",
@@ -5143,7 +6428,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-21",
+        "bag_dev_end": "2028-03-02",
+        "bag_review_end": "2028-03-07",
+        "bag_approval": "2028-03-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "406",
@@ -5161,7 +6451,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-21",
+        "bag_dev_end": "2028-08-31",
+        "bag_review_end": "2028-09-05",
+        "bag_approval": "2028-09-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "217",
@@ -5179,7 +6474,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-10-11",
+        "bag_dev_end": "2027-10-21",
+        "bag_review_end": "2027-10-26",
+        "bag_approval": "2027-10-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "310",
@@ -5197,7 +6497,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2027-09-29",
+        "bag_dev_end": "2027-10-09",
+        "bag_review_end": "2027-10-14",
+        "bag_approval": "2027-10-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "27",
@@ -5215,7 +6520,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 3,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-14",
+        "bag_dev_end": "2026-09-24",
+        "bag_review_end": "2026-09-29",
+        "bag_approval": "2026-09-29",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "110",
@@ -5233,7 +6543,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-08-26",
+        "bag_dev_end": "2026-09-05",
+        "bag_review_end": "2026-09-10",
+        "bag_approval": "2026-09-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "266",
@@ -5251,7 +6566,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-12-15",
+        "bag_dev_end": "2027-12-25",
+        "bag_review_end": "2027-12-30",
+        "bag_approval": "2027-12-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "380",
@@ -5269,7 +6589,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-12",
+        "bag_dev_end": "2028-01-22",
+        "bag_review_end": "2028-01-27",
+        "bag_approval": "2028-01-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "396",
@@ -5287,7 +6612,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-02",
+        "bag_dev_end": "2028-02-12",
+        "bag_review_end": "2028-02-17",
+        "bag_approval": "2028-02-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "138",
@@ -5305,7 +6635,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-05-26",
+        "bag_dev_end": "2027-06-05",
+        "bag_review_end": "2027-06-10",
+        "bag_approval": "2027-06-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "56",
@@ -5323,7 +6658,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-10-21",
+        "bag_dev_end": "2026-10-31",
+        "bag_review_end": "2026-11-05",
+        "bag_approval": "2026-11-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "336",
@@ -5341,7 +6681,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-29",
+        "bag_dev_end": "2028-06-08",
+        "bag_review_end": "2028-06-13",
+        "bag_approval": "2028-06-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "207",
@@ -5359,7 +6704,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-20",
+        "bag_dev_end": "2027-09-30",
+        "bag_review_end": "2027-10-05",
+        "bag_approval": "2027-10-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "260",
@@ -5377,7 +6727,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-12-13",
+        "bag_dev_end": "2027-12-23",
+        "bag_review_end": "2027-12-28",
+        "bag_approval": "2027-12-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "120",
@@ -5395,7 +6750,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-16",
+        "bag_dev_end": "2026-09-26",
+        "bag_review_end": "2026-10-01",
+        "bag_approval": "2026-10-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "281",
@@ -5413,7 +6773,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-02-16",
+        "bag_dev_end": "2028-02-26",
+        "bag_review_end": "2028-03-02",
+        "bag_approval": "2028-03-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "63",
@@ -5431,7 +6796,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-30",
+        "bag_dev_end": "2026-12-10",
+        "bag_review_end": "2026-12-15",
+        "bag_approval": "2026-12-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "385",
@@ -5449,7 +6819,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-25",
+        "bag_dev_end": "2027-02-04",
+        "bag_review_end": "2027-02-09",
+        "bag_approval": "2027-02-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "149",
@@ -5467,7 +6842,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-26",
+        "bag_dev_end": "2027-05-06",
+        "bag_review_end": "2027-05-11",
+        "bag_approval": "2027-05-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "36",
@@ -5485,7 +6865,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-07",
+        "bag_dev_end": "2026-09-17",
+        "bag_review_end": "2026-09-22",
+        "bag_approval": "2026-09-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "196",
@@ -5503,7 +6888,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-01",
+        "bag_dev_end": "2027-09-11",
+        "bag_review_end": "2027-09-16",
+        "bag_approval": "2027-09-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "346",
@@ -5521,7 +6911,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-05-08",
+        "bag_dev_end": "2028-05-18",
+        "bag_review_end": "2028-05-23",
+        "bag_approval": "2028-05-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "373",
@@ -5539,7 +6934,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-12",
+        "bag_dev_end": "2028-07-22",
+        "bag_review_end": "2028-07-27",
+        "bag_approval": "2028-07-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "329",
@@ -5557,7 +6957,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-10",
+        "bag_dev_end": "2028-05-20",
+        "bag_review_end": "2028-05-25",
+        "bag_approval": "2028-05-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "268",
@@ -5575,7 +6980,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-26",
+        "bag_dev_end": "2027-08-05",
+        "bag_review_end": "2027-08-10",
+        "bag_approval": "2027-08-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "59",
@@ -5593,7 +7003,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-11",
+        "bag_dev_end": "2026-11-21",
+        "bag_review_end": "2026-11-26",
+        "bag_approval": "2026-11-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "369",
@@ -5611,7 +7026,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-04",
+        "bag_dev_end": "2027-01-14",
+        "bag_review_end": "2027-01-19",
+        "bag_approval": "2027-01-19",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "73",
@@ -5629,7 +7049,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-18",
+        "bag_dev_end": "2027-01-28",
+        "bag_review_end": "2027-02-02",
+        "bag_approval": "2027-02-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "203",
@@ -5647,7 +7072,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-10-18",
+        "bag_dev_end": "2027-10-28",
+        "bag_review_end": "2027-11-02",
+        "bag_approval": "2027-11-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "393",
@@ -5665,7 +7095,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-27",
+        "bag_dev_end": "2027-02-06",
+        "bag_review_end": "2027-02-11",
+        "bag_approval": "2027-02-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "69",
@@ -5683,7 +7118,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-30",
+        "bag_dev_end": "2027-01-09",
+        "bag_review_end": "2027-01-14",
+        "bag_approval": "2027-01-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "89",
@@ -5701,7 +7141,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-21",
+        "bag_dev_end": "2026-12-31",
+        "bag_review_end": "2027-01-05",
+        "bag_approval": "2027-01-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "58",
@@ -5719,7 +7164,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-30",
+        "bag_dev_end": "2026-10-10",
+        "bag_review_end": "2026-10-15",
+        "bag_approval": "2026-10-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "99",
@@ -5737,7 +7187,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-11",
+        "bag_dev_end": "2027-01-21",
+        "bag_review_end": "2027-01-26",
+        "bag_approval": "2027-01-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "62",
@@ -5755,7 +7210,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-19",
+        "bag_dev_end": "2026-10-29",
+        "bag_review_end": "2026-11-03",
+        "bag_approval": "2026-11-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "50",
@@ -5773,7 +7233,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-09",
+        "bag_dev_end": "2026-09-19",
+        "bag_review_end": "2026-09-24",
+        "bag_approval": "2026-09-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "74",
@@ -5791,7 +7256,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-11",
+        "bag_dev_end": "2026-11-21",
+        "bag_review_end": "2026-11-26",
+        "bag_approval": "2026-11-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "139",
@@ -5809,7 +7279,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-05",
+        "bag_dev_end": "2027-04-15",
+        "bag_review_end": "2027-04-20",
+        "bag_approval": "2027-04-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "134",
@@ -5827,7 +7302,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-17",
+        "bag_dev_end": "2027-03-27",
+        "bag_review_end": "2027-04-01",
+        "bag_approval": "2027-04-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "119",
@@ -5845,7 +7325,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-22",
+        "bag_dev_end": "2027-03-04",
+        "bag_review_end": "2027-03-09",
+        "bag_approval": "2027-03-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "129",
@@ -5863,7 +7348,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-03-15",
+        "bag_dev_end": "2027-03-25",
+        "bag_review_end": "2027-03-30",
+        "bag_approval": "2027-03-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "124",
@@ -5881,7 +7371,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-24",
+        "bag_dev_end": "2027-03-06",
+        "bag_review_end": "2027-03-11",
+        "bag_approval": "2027-03-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "114",
@@ -5899,7 +7394,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-03",
+        "bag_dev_end": "2027-02-13",
+        "bag_review_end": "2027-02-18",
+        "bag_approval": "2027-02-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "46",
@@ -5917,7 +7417,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-07",
+        "bag_dev_end": "2026-09-17",
+        "bag_review_end": "2026-09-22",
+        "bag_approval": "2026-09-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "54",
@@ -5935,7 +7440,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-28",
+        "bag_dev_end": "2026-10-08",
+        "bag_review_end": "2026-10-13",
+        "bag_approval": "2026-10-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "66",
@@ -5953,7 +7463,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-21",
+        "bag_dev_end": "2026-10-31",
+        "bag_review_end": "2026-11-05",
+        "bag_approval": "2026-11-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "104",
@@ -5971,7 +7486,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-13",
+        "bag_dev_end": "2027-01-23",
+        "bag_review_end": "2027-01-28",
+        "bag_approval": "2027-01-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "79",
@@ -5989,7 +7509,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-30",
+        "bag_dev_end": "2026-12-10",
+        "bag_review_end": "2026-12-15",
+        "bag_approval": "2026-12-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "70",
@@ -6007,7 +7532,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-11-09",
+        "bag_dev_end": "2026-11-19",
+        "bag_review_end": "2026-11-24",
+        "bag_approval": "2026-11-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "84",
@@ -6025,7 +7555,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-02",
+        "bag_dev_end": "2026-12-12",
+        "bag_review_end": "2026-12-17",
+        "bag_approval": "2026-12-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "38",
@@ -6043,7 +7578,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-17",
+        "bag_dev_end": "2026-08-27",
+        "bag_review_end": "2026-09-01",
+        "bag_approval": "2026-09-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "94",
@@ -6061,7 +7601,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-23",
+        "bag_dev_end": "2027-01-02",
+        "bag_review_end": "2027-01-07",
+        "bag_approval": "2027-01-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "33",
@@ -6079,7 +7624,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-29",
+        "bag_dev_end": "2026-08-08",
+        "bag_review_end": "2026-08-13",
+        "bag_approval": "2026-08-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "42",
@@ -6097,7 +7647,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-19",
+        "bag_dev_end": "2026-08-29",
+        "bag_review_end": "2026-09-03",
+        "bag_approval": "2026-09-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "109",
@@ -6115,7 +7670,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-01",
+        "bag_dev_end": "2027-02-11",
+        "bag_review_end": "2027-02-16",
+        "bag_approval": "2027-02-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "144",
@@ -6133,7 +7693,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-07",
+        "bag_dev_end": "2027-04-17",
+        "bag_review_end": "2027-04-22",
+        "bag_approval": "2027-04-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "249",
@@ -6151,7 +7716,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-11-22",
+        "bag_dev_end": "2027-12-02",
+        "bag_review_end": "2027-12-07",
+        "bag_approval": "2027-12-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "398",
@@ -6169,7 +7739,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-08-02",
+        "bag_dev_end": "2028-08-12",
+        "bag_review_end": "2028-08-17",
+        "bag_approval": "2028-08-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "304",
@@ -6187,7 +7762,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-27",
+        "bag_dev_end": "2027-10-07",
+        "bag_review_end": "2027-10-12",
+        "bag_approval": "2027-10-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "408",
@@ -6205,7 +7785,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-07-31",
+        "bag_dev_end": "2028-08-10",
+        "bag_review_end": "2028-08-15",
+        "bag_approval": "2028-08-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "157",
@@ -6223,7 +7808,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-07",
+        "bag_dev_end": "2027-06-17",
+        "bag_review_end": "2027-06-22",
+        "bag_approval": "2027-06-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "192",
@@ -6241,7 +7831,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-11",
+        "bag_dev_end": "2027-08-21",
+        "bag_review_end": "2027-08-26",
+        "bag_approval": "2027-08-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "68",
@@ -6259,7 +7854,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-30",
+        "bag_dev_end": "2026-12-10",
+        "bag_review_end": "2026-12-15",
+        "bag_approval": "2026-12-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "137",
@@ -6277,7 +7877,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-26",
+        "bag_dev_end": "2027-05-06",
+        "bag_review_end": "2027-05-11",
+        "bag_approval": "2027-05-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "60",
@@ -6295,7 +7900,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-09",
+        "bag_dev_end": "2026-11-19",
+        "bag_review_end": "2026-11-24",
+        "bag_approval": "2026-11-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "334",
@@ -6313,7 +7923,12 @@
         "program_cost": 50000.0,
         "travel_cost": 45573.0,
         "repetitions": 1,
-        "grand_total": 95573.0
+        "grand_total": 95573.0,
+        "bag_dev_start": "2026-07-13",
+        "bag_dev_end": "2026-07-23",
+        "bag_review_end": "2026-07-28",
+        "bag_approval": "2026-07-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "330",
@@ -6331,7 +7946,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-08",
+        "bag_dev_end": "2028-05-18",
+        "bag_review_end": "2028-05-23",
+        "bag_approval": "2028-05-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "23",
@@ -6349,7 +7969,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-07-29",
+        "bag_dev_end": "2026-08-08",
+        "bag_review_end": "2026-08-13",
+        "bag_approval": "2026-08-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "64",
@@ -6367,7 +7992,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-11",
+        "bag_dev_end": "2026-11-21",
+        "bag_review_end": "2026-11-26",
+        "bag_approval": "2026-11-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "156",
@@ -6385,7 +8015,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-09",
+        "bag_dev_end": "2027-06-19",
+        "bag_review_end": "2027-06-24",
+        "bag_approval": "2027-06-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "415",
@@ -6403,7 +8038,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-10-09",
+        "bag_dev_end": "2028-10-19",
+        "bag_review_end": "2028-10-24",
+        "bag_approval": "2028-10-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "377",
@@ -6421,7 +8061,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-01-06",
+        "bag_dev_end": "2027-01-16",
+        "bag_review_end": "2027-01-21",
+        "bag_approval": "2027-01-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "44",
@@ -6439,7 +8084,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-28",
+        "bag_dev_end": "2026-10-08",
+        "bag_review_end": "2026-10-13",
+        "bag_approval": "2026-10-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "394",
@@ -6457,7 +8107,12 @@
         "program_cost": 50000.0,
         "travel_cost": 45573.0,
         "repetitions": 1,
-        "grand_total": 95573.0
+        "grand_total": 95573.0,
+        "bag_dev_start": "2027-05-24",
+        "bag_dev_end": "2027-06-03",
+        "bag_review_end": "2027-06-08",
+        "bag_approval": "2027-06-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "399",
@@ -6475,7 +8130,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-09-18",
+        "bag_dev_end": "2028-09-28",
+        "bag_review_end": "2028-10-03",
+        "bag_approval": "2028-10-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "258",
@@ -6493,7 +8153,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-03",
+        "bag_dev_end": "2028-01-13",
+        "bag_review_end": "2028-01-18",
+        "bag_approval": "2028-01-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "185",
@@ -6511,7 +8176,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-08",
+        "bag_dev_end": "2027-02-18",
+        "bag_review_end": "2027-02-23",
+        "bag_approval": "2027-02-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "97",
@@ -6529,7 +8199,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-02-01",
+        "bag_dev_end": "2027-02-11",
+        "bag_review_end": "2027-02-16",
+        "bag_approval": "2027-02-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "165",
@@ -6547,7 +8222,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-28",
+        "bag_dev_end": "2027-01-07",
+        "bag_review_end": "2027-01-12",
+        "bag_approval": "2027-01-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "145",
@@ -6565,7 +8245,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-11-16",
+        "bag_dev_end": "2026-11-26",
+        "bag_review_end": "2026-12-01",
+        "bag_approval": "2026-12-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "161",
@@ -6583,7 +8268,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-28",
+        "bag_dev_end": "2027-07-08",
+        "bag_review_end": "2027-07-13",
+        "bag_approval": "2027-07-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "222",
@@ -6601,7 +8291,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-10-13",
+        "bag_dev_end": "2027-10-23",
+        "bag_review_end": "2027-10-28",
+        "bag_approval": "2027-10-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "328",
@@ -6619,7 +8314,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2027-11-08",
+        "bag_dev_end": "2027-11-18",
+        "bag_review_end": "2027-11-23",
+        "bag_approval": "2027-11-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "280",
@@ -6637,7 +8337,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-16",
+        "bag_dev_end": "2027-08-26",
+        "bag_review_end": "2027-08-31",
+        "bag_approval": "2027-08-31",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "227",
@@ -6655,7 +8360,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-11-01",
+        "bag_dev_end": "2027-11-11",
+        "bag_review_end": "2027-11-16",
+        "bag_approval": "2027-11-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "375",
@@ -6673,7 +8383,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-08-09",
+        "bag_dev_end": "2028-08-19",
+        "bag_review_end": "2028-08-24",
+        "bag_approval": "2028-08-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "16",
@@ -6691,7 +8406,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-06-17",
+        "bag_dev_end": "2026-06-27",
+        "bag_review_end": "2026-07-02",
+        "bag_approval": "2026-07-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "244",
@@ -6709,7 +8429,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-11-03",
+        "bag_dev_end": "2027-11-13",
+        "bag_review_end": "2027-11-18",
+        "bag_approval": "2027-11-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "390",
@@ -6727,7 +8452,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-31",
+        "bag_dev_end": "2028-08-10",
+        "bag_review_end": "2028-08-15",
+        "bag_approval": "2028-08-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "320",
@@ -6745,7 +8475,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-03-27",
+        "bag_dev_end": "2028-04-06",
+        "bag_review_end": "2028-04-11",
+        "bag_approval": "2028-04-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "168",
@@ -6763,7 +8498,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-07-28",
+        "bag_dev_end": "2027-08-07",
+        "bag_review_end": "2027-08-12",
+        "bag_approval": "2027-08-12",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "57",
@@ -6781,7 +8521,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-07",
+        "bag_dev_end": "2026-12-17",
+        "bag_review_end": "2026-12-22",
+        "bag_approval": "2026-12-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "378",
@@ -6799,7 +8544,12 @@
         "program_cost": 50000.0,
         "travel_cost": 45573.0,
         "repetitions": 1,
-        "grand_total": 95573.0
+        "grand_total": 95573.0,
+        "bag_dev_start": "2027-05-03",
+        "bag_dev_end": "2027-05-13",
+        "bag_review_end": "2027-05-18",
+        "bag_approval": "2027-05-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "198",
@@ -6817,7 +8567,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-09-29",
+        "bag_dev_end": "2027-10-09",
+        "bag_review_end": "2027-10-14",
+        "bag_approval": "2027-10-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "307",
@@ -6835,7 +8590,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-04-26",
+        "bag_dev_end": "2028-05-06",
+        "bag_review_end": "2028-05-11",
+        "bag_approval": "2028-05-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "14",
@@ -6853,7 +8613,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-03",
+        "bag_dev_end": "2026-08-13",
+        "bag_review_end": "2026-08-18",
+        "bag_approval": "2026-08-18",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "391",
@@ -6871,7 +8636,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-08-30",
+        "bag_dev_end": "2028-09-09",
+        "bag_review_end": "2028-09-14",
+        "bag_approval": "2028-09-14",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "265",
@@ -6889,7 +8659,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 5,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-02-21",
+        "bag_dev_end": "2028-03-02",
+        "bag_review_end": "2028-03-07",
+        "bag_approval": "2028-03-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "301",
@@ -6907,7 +8682,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2028-04-24",
+        "bag_dev_end": "2028-05-04",
+        "bag_review_end": "2028-05-09",
+        "bag_approval": "2028-05-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "319",
@@ -6925,7 +8705,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-05-17",
+        "bag_dev_end": "2028-05-27",
+        "bag_review_end": "2028-06-01",
+        "bag_approval": "2028-06-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "315",
@@ -6943,7 +8728,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-10-12",
+        "bag_dev_end": "2026-10-22",
+        "bag_review_end": "2026-10-27",
+        "bag_approval": "2026-10-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "309",
@@ -6961,7 +8751,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-09-23",
+        "bag_dev_end": "2026-10-03",
+        "bag_review_end": "2026-10-08",
+        "bag_approval": "2026-10-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "273",
@@ -6979,7 +8774,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-22",
+        "bag_dev_end": "2026-08-01",
+        "bag_review_end": "2026-08-06",
+        "bag_approval": "2026-08-06",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "279",
@@ -6997,7 +8797,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-08-10",
+        "bag_dev_end": "2026-08-20",
+        "bag_review_end": "2026-08-25",
+        "bag_approval": "2026-08-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "215",
@@ -7015,7 +8820,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-12",
+        "bag_dev_end": "2027-04-22",
+        "bag_review_end": "2027-04-27",
+        "bag_approval": "2027-04-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "125",
@@ -7033,7 +8843,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2026-10-05",
+        "bag_dev_end": "2026-10-15",
+        "bag_review_end": "2026-10-20",
+        "bag_approval": "2026-10-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "250",
@@ -7051,7 +8866,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2027-06-16",
+        "bag_dev_end": "2027-06-26",
+        "bag_review_end": "2027-07-01",
+        "bag_approval": "2027-07-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "106",
@@ -7069,7 +8889,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 2,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2027-02-24",
+        "bag_dev_end": "2027-03-06",
+        "bag_review_end": "2027-03-11",
+        "bag_approval": "2027-03-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "256",
@@ -7087,7 +8912,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-07-05",
+        "bag_dev_end": "2027-07-15",
+        "bag_review_end": "2027-07-20",
+        "bag_approval": "2027-07-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "39",
@@ -7105,7 +8935,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-09-28",
+        "bag_dev_end": "2026-10-08",
+        "bag_review_end": "2026-10-13",
+        "bag_approval": "2026-10-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "276",
@@ -7123,7 +8958,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-26",
+        "bag_dev_end": "2028-02-05",
+        "bag_review_end": "2028-02-10",
+        "bag_approval": "2028-02-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "240",
@@ -7141,7 +8981,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-26",
+        "bag_dev_end": "2027-06-05",
+        "bag_review_end": "2027-06-10",
+        "bag_approval": "2027-06-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "402",
@@ -7159,7 +9004,12 @@
         "program_cost": 50000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 50000.0
+        "grand_total": 50000.0,
+        "bag_dev_start": "2027-05-26",
+        "bag_dev_end": "2027-06-05",
+        "bag_review_end": "2027-06-10",
+        "bag_approval": "2027-06-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "10",
@@ -7177,7 +9027,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "235",
@@ -7195,7 +9050,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-05-24",
+        "bag_dev_end": "2027-06-03",
+        "bag_review_end": "2027-06-08",
+        "bag_approval": "2027-06-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "72",
@@ -7213,7 +9073,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-02",
+        "bag_dev_end": "2026-12-12",
+        "bag_review_end": "2026-12-17",
+        "bag_approval": "2026-12-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "173",
@@ -7231,7 +9096,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 2,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-08-16",
+        "bag_dev_end": "2027-08-26",
+        "bag_review_end": "2027-08-31",
+        "bag_approval": "2027-08-31",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "269",
@@ -7249,7 +9119,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-01-26",
+        "bag_dev_end": "2028-02-05",
+        "bag_review_end": "2028-02-10",
+        "bag_approval": "2028-02-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "337",
@@ -7267,7 +9142,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-10",
+        "bag_dev_end": "2028-05-20",
+        "bag_review_end": "2028-05-25",
+        "bag_approval": "2028-05-25",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "351",
@@ -7285,7 +9165,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-31",
+        "bag_dev_end": "2028-06-10",
+        "bag_review_end": "2028-06-15",
+        "bag_approval": "2028-06-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "12",
@@ -7303,7 +9188,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2026-07-06",
+        "bag_dev_end": "2026-07-16",
+        "bag_review_end": "2026-07-21",
+        "bag_approval": "2026-07-21",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "155",
@@ -7321,7 +9211,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-07",
+        "bag_dev_end": "2026-12-17",
+        "bag_review_end": "2026-12-22",
+        "bag_approval": "2026-12-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "11",
@@ -7339,7 +9234,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-15",
+        "bag_dev_end": "2026-07-25",
+        "bag_review_end": "2026-07-30",
+        "bag_approval": "2026-07-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "352",
@@ -7357,7 +9257,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-07-17",
+        "bag_dev_end": "2028-07-27",
+        "bag_review_end": "2028-08-01",
+        "bag_approval": "2028-08-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "284",
@@ -7375,7 +9280,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-24",
+        "bag_dev_end": "2028-02-03",
+        "bag_review_end": "2028-02-08",
+        "bag_approval": "2028-02-08",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "331",
@@ -7393,7 +9303,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-07",
+        "bag_dev_end": "2028-06-17",
+        "bag_review_end": "2028-06-22",
+        "bag_approval": "2028-06-22",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "325",
@@ -7411,7 +9326,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-05",
+        "bag_dev_end": "2028-06-15",
+        "bag_review_end": "2028-06-20",
+        "bag_approval": "2028-06-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "233",
@@ -7429,7 +9349,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-12-20",
+        "bag_dev_end": "2027-12-30",
+        "bag_review_end": "2028-01-04",
+        "bag_approval": "2028-01-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "290",
@@ -7447,7 +9372,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-01-26",
+        "bag_dev_end": "2028-02-05",
+        "bag_review_end": "2028-02-10",
+        "bag_approval": "2028-02-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "409",
@@ -7465,7 +9395,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-02-17",
+        "bag_dev_end": "2027-02-27",
+        "bag_review_end": "2027-03-04",
+        "bag_approval": "2027-03-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "317",
@@ -7483,7 +9418,12 @@
         "program_cost": 20000.0,
         "travel_cost": 133675.0,
         "repetitions": 1,
-        "grand_total": 153675.0
+        "grand_total": 153675.0,
+        "bag_dev_start": "2028-04-19",
+        "bag_dev_end": "2028-04-29",
+        "bag_review_end": "2028-05-04",
+        "bag_approval": "2028-05-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "313",
@@ -7501,7 +9441,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-05-15",
+        "bag_dev_end": "2028-05-25",
+        "bag_review_end": "2028-05-30",
+        "bag_approval": "2028-05-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "61",
@@ -7519,7 +9464,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-12-09",
+        "bag_dev_end": "2026-12-19",
+        "bag_review_end": "2026-12-24",
+        "bag_approval": "2026-12-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "167",
@@ -7537,7 +9487,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-06-28",
+        "bag_dev_end": "2027-07-08",
+        "bag_review_end": "2027-07-13",
+        "bag_approval": "2027-07-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "187",
@@ -7555,7 +9510,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-08-09",
+        "bag_dev_end": "2027-08-19",
+        "bag_review_end": "2027-08-24",
+        "bag_approval": "2027-08-24",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "127",
@@ -7573,7 +9533,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-05",
+        "bag_dev_end": "2027-04-15",
+        "bag_review_end": "2027-04-20",
+        "bag_approval": "2027-04-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "184",
@@ -7591,7 +9556,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-06-30",
+        "bag_dev_end": "2027-07-10",
+        "bag_review_end": "2027-07-15",
+        "bag_approval": "2027-07-15",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "376",
@@ -7609,7 +9579,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-19",
+        "bag_dev_end": "2028-06-29",
+        "bag_review_end": "2028-07-04",
+        "bag_approval": "2028-07-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "29",
@@ -7627,7 +9602,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2026-07-27",
+        "bag_dev_end": "2026-08-06",
+        "bag_review_end": "2026-08-11",
+        "bag_approval": "2026-08-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "164",
@@ -7645,7 +9625,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-05-19",
+        "bag_dev_end": "2027-05-29",
+        "bag_review_end": "2027-06-03",
+        "bag_approval": "2027-06-03",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "142",
@@ -7663,7 +9648,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-04-28",
+        "bag_dev_end": "2027-05-08",
+        "bag_review_end": "2027-05-13",
+        "bag_approval": "2027-05-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "5",
@@ -7681,7 +9671,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-24",
+        "bag_dev_end": "2026-07-04",
+        "bag_review_end": "2026-07-09",
+        "bag_approval": "2026-07-09",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "344",
@@ -7699,7 +9694,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-29",
+        "bag_dev_end": "2028-06-08",
+        "bag_review_end": "2028-06-13",
+        "bag_approval": "2028-06-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "382",
@@ -7717,7 +9717,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-07-12",
+        "bag_dev_end": "2028-07-22",
+        "bag_review_end": "2028-07-27",
+        "bag_approval": "2028-07-27",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "358",
@@ -7735,7 +9740,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-06-19",
+        "bag_dev_end": "2028-06-29",
+        "bag_review_end": "2028-07-04",
+        "bag_approval": "2028-07-04",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "413",
@@ -7753,7 +9763,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-09-11",
+        "bag_dev_end": "2028-09-21",
+        "bag_review_end": "2028-09-26",
+        "bag_approval": "2028-09-26",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "202",
@@ -7771,7 +9786,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-09-01",
+        "bag_dev_end": "2027-09-11",
+        "bag_review_end": "2027-09-16",
+        "bag_approval": "2027-09-16",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "338",
@@ -7789,7 +9809,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-06-26",
+        "bag_dev_end": "2028-07-06",
+        "bag_review_end": "2028-07-11",
+        "bag_approval": "2028-07-11",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "154",
@@ -7807,7 +9832,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-04-28",
+        "bag_dev_end": "2027-05-08",
+        "bag_review_end": "2027-05-13",
+        "bag_approval": "2027-05-13",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "411",
@@ -7825,7 +9855,12 @@
         "program_cost": 40000.0,
         "travel_cost": 114400.0,
         "repetitions": 1,
-        "grand_total": 154400.0
+        "grand_total": 154400.0,
+        "bag_dev_start": "2026-06-22",
+        "bag_dev_end": "2026-07-02",
+        "bag_review_end": "2026-07-07",
+        "bag_approval": "2026-07-07",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "77",
@@ -7843,7 +9878,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-21",
+        "bag_dev_end": "2026-12-31",
+        "bag_review_end": "2027-01-05",
+        "bag_approval": "2027-01-05",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "323",
@@ -7861,7 +9901,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-05-08",
+        "bag_dev_end": "2028-05-18",
+        "bag_review_end": "2028-05-23",
+        "bag_approval": "2028-05-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "153",
@@ -7879,7 +9924,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-07-05",
+        "bag_dev_end": "2027-07-15",
+        "bag_review_end": "2027-07-20",
+        "bag_approval": "2027-07-20",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "293",
@@ -7897,7 +9947,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2028-03-08",
+        "bag_dev_end": "2028-03-18",
+        "bag_review_end": "2028-03-23",
+        "bag_approval": "2028-03-23",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "6",
@@ -7915,7 +9970,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-06-15",
+        "bag_dev_end": "2026-06-25",
+        "bag_review_end": "2026-06-30",
+        "bag_approval": "2026-06-30",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "67",
@@ -7933,7 +9993,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2026-12-02",
+        "bag_dev_end": "2026-12-12",
+        "bag_review_end": "2026-12-17",
+        "bag_approval": "2026-12-17",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "116",
@@ -7951,7 +10016,12 @@
         "program_cost": 15000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 15000.0
+        "grand_total": 15000.0,
+        "bag_dev_start": "2027-03-17",
+        "bag_dev_end": "2027-03-27",
+        "bag_review_end": "2027-04-01",
+        "bag_approval": "2027-04-01",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "234",
@@ -7969,7 +10039,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 1,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-10-13",
+        "bag_dev_end": "2027-10-23",
+        "bag_review_end": "2027-10-28",
+        "bag_approval": "2027-10-28",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "163",
@@ -7987,7 +10062,12 @@
         "program_cost": 5000.0,
         "travel_cost": 0.0,
         "repetitions": 2,
-        "grand_total": 5000.0
+        "grand_total": 5000.0,
+        "bag_dev_start": "2027-07-26",
+        "bag_dev_end": "2027-08-05",
+        "bag_review_end": "2027-08-10",
+        "bag_approval": "2027-08-10",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "288",
@@ -8005,7 +10085,12 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 1,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2028-02-16",
+        "bag_dev_end": "2028-02-26",
+        "bag_review_end": "2028-03-02",
+        "bag_approval": "2028-03-02",
+        "readiness_status": "لم تبدأ"
     },
     {
         "id": "238",
@@ -8023,20 +10108,23 @@
         "program_cost": 20000.0,
         "travel_cost": 95125.0,
         "repetitions": 5,
-        "grand_total": 115125.0
+        "grand_total": 115125.0,
+        "bag_dev_start": "2027-12-22",
+        "bag_dev_end": "2028-01-01",
+        "bag_review_end": "2028-01-06",
+        "bag_approval": "2028-01-06",
+        "readiness_status": "لم تبدأ"
     }
 ];
         const pathColorsMap = {};
         const baseColors = ['#1d4229', '#29693b', '#b08932', '#420a70', '#4a4b4d', '#00a85a', '#cfa13a', '#5c1699'];
 
-        // دالة التحقق من صحة تسجيل الدخول
         function validateLogin() {
             const userInp = document.getElementById('username').value.trim();
             const passInp = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error');
 
             if (userInp === AUTH_CONFIG.username && passInp === AUTH_CONFIG.password) {
-                // إخفاء بوابة الدخول وإظهار اللوحة التفاعلية بالكامل
                 document.getElementById('login-overlay').style.display = 'none';
                 document.getElementById('main-dashboard-content').style.display = 'block';
                 initApp();
@@ -8045,7 +10133,6 @@
             }
         }
 
-        // إضافة إمكانية الضغط على Enter في حقول تسجيل الدخول للسهولة
         document.getElementById('password').addEventListener('keyup', function(event) {
             if (event.key === 'Enter') validateLogin();
         });
@@ -8090,7 +10177,7 @@
             updateKPIs(filteredData, isRepeatedMode);
             renderGanttChart(filteredData);
             renderReportTable(filteredData, isRepeatedMode);
-	    buildBagsReverseTimeline(filteredData);
+            buildBagsDirectTimeline(filteredData);
         }
 
         function updateKPIs(data, useReps) {
@@ -8193,7 +10280,7 @@
             });
             tbody.innerHTML = tableHtml || '<tr><td colspan="7" style="text-align:center; color:#94a3b8;">لا توجد بيانات متاحة للعرض حالياً</td></tr>';
         }
-// دالات التحكم في فتح وإغلاق النافذة المنبثقة
+
         function openBagsModal() {
             document.getElementById('bagsTimelineModal').style.display = 'block';
         }
@@ -8201,77 +10288,49 @@
             document.getElementById('bagsTimelineModal').style.display = 'none';
         }
 
-        // دالة بناء الجدولة العكسية والتوزيع التتابعي الفعلي
-        function buildBagsReverseTimeline(data) {
+        function buildBagsDirectTimeline(data) {
             const tbody = document.getElementById('bags-dynamic-rows');
             let rowsHtml = '';
 
             if(!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">لا توجد برامج مطابقة للفلاتر الحالية لجدولة الحقائب.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">لا توجد برامج مطابقة للحقائب.</td></tr>';
                 return;
             }
 
             data.forEach(item => {
-                // التقاط تاريخ التنفيذ الفعلي للبرنامج
-                const executionDate = new Date(item.date);
-                if (isNaN(executionDate.getTime())) return; // تخطي التواريخ غير الصحيحة
-
-                // دالة مساعدة لطرح أيام العمل الفعلي وتجنب عطلة نهاية الأسبوع (الجمعة والسبت) إذا رغبت
-                function subtractWorkDays(startDate, daysToSubtract) {
-                    let result = new Date(startDate);
-                    let counted = 0;
-                    while (counted < daysToSubtract) {
-                        result.setDate(result.getDate() - 1);
-                        // إذا أردت استبعاد الجمعة والسبت فك تفعيل السطر القادم، حالياً خصم تقويمي منتظم:
-                        counted++;
-                    }
-                    return result;
-                }
-
-                // الحسابات العكسية التتابعية بناءً على المرفق المثالي:
-                // 1. الاعتماد النهائي (قبل التنفيذ بـ 5 أيام عمل مثلاً أو مباشرة قبله)
-                const targetGap = 5; 
-                const dependencyDate = subtractWorkDays(executionDate, targetGap);
+                // تحديد نمط اللون المخصص لحالة الجاهزية ديناميكياً
+                let statusClass = 'status-not-started';
+                let statusText = item.readiness_status || 'لم تبدأ';
                 
-                // 2. مرحلة المراجعة والتدقيق (5 أيام قبل الاعتماد)
-                const reviewEndDate = new Date(dependencyDate);
-                const reviewStartDate = subtractWorkDays(reviewEndDate, 5);
-
-                // 3. مرحلة الإعداد والتطوير (10 أيام قبل المراجعة)
-                const devEndDate = new Date(reviewStartDate);
-                const devStartDate = subtractWorkDays(devEndDate, 10);
-
-                const formatYMD = (d) => d.toISOString().split('T')[0];
+                if (statusText.includes('مكتمل') || statusText.includes('جاهز') || statusText.includes('تمت')) {
+                    statusClass = 'status-completed';
+                } else if (statusText.includes('جاري') || statusText.includes('تحت')) {
+                    statusClass = 'status-in-progress';
+                }
 
                 rowsHtml += `<tr style="border-bottom: 1px solid #f1f5f9; vertical-align: middle;">
                     <td style="padding: 15px 12px;">
                         <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">${item.name}</div>
-                        <div style="color: #ef4444; font-size: 12px; font-weight: bold;">📅 التنفيذ: ${item.date}</div>
+                        <div style="color: var(--brand-safari-green); font-size: 12px; font-weight: bold;">📅 التنفيذ: ${item.date}</div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="font-size: 11px; margin-bottom: 4px;"><span style="color: #64748b;">البدء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${formatYMD(devStartDate)}</span></div>
-                        <div style="font-size: 11px;"><span style="color: #64748b;">الانتهاء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${formatYMD(devEndDate)}</span></div>
+                        <div style="font-size: 12px; margin-bottom: 4px;"><span style="color: #64748b;">البدء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${item.bag_dev_start}</span></div>
+                        <div style="font-size: 12px;"><span style="color: #64748b;">الانتهاء:</span> <span style="background: #f1f5f9; padding: 2px 6px; border-radius:4px; font-weight:600; color:#1e293b;">${item.bag_dev_end}</span></div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="font-size: 11px; margin-bottom: 4px;"><span style="color: #b45309;">البدء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${formatYMD(reviewStartDate)}</span></div>
-                        <div style="font-size: 11px;"><span style="color: #b45309;">الانتهاء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${formatYMD(reviewEndDate)}</span></div>
+                        <div style="font-size: 12px;"><span style="color: #b45309;">الانتهاء:</span> <span style="background: #fef3c7; padding: 2px 6px; border-radius:4px; font-weight:600; color:#b45309;">${item.bag_review_end}</span></div>
                     </td>
                     
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="background: #dcfce7; color: #15803d; padding: 6px 12px; border-radius: 6px; font-weight: bold; display: inline-block;">
-                            ${formatYMD(dependencyDate)}
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; padding: 6px 12px; border-radius: 6px; font-weight: 600; display: inline-block;">
+                            ${item.bag_approval}
                         </div>
-                        <div style="font-size: 11px; color: #64748b; margin-top: 4px;">(قبل التنفيذ بـ ${targetGap} أيام عمل)</div>
                     </td>
-                    
+
                     <td style="padding: 15px 12px; text-align: center;">
-                        <div style="display: flex; width: 100%; height: 24px; border-radius: 4px; overflow: hidden; font-size: 10px; color: white; font-weight: bold; text-align: center; line-height: 24px;">
-                            <div style="flex: 2; background-color: #2563eb;" title="تطوير (10 أيام)">تطوير</div>
-                            <div style="flex: 1; background-color: #d97706;" title="مراجعة (5 أيام)">مراجعة</div>
-                            <div style="flex: 0.4; background-color: #16a34a;" title="اعتماد (يوم واحد)">اعتماد</div>
-                        </div>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
                     </td>
                 </tr>`;
             });
@@ -8279,7 +10338,6 @@
             tbody.innerHTML = rowsHtml;
         }
 
-        // إغلاق النافذة تلقائياً إذا ضغط المستخدم خارج الصندوق الأبيض
         window.onclick = function(event) {
             const modal = document.getElementById('bagsTimelineModal');
             if (event.target == modal) {
