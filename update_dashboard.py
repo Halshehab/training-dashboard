@@ -9,7 +9,7 @@ def generate_interactive_calendar():
     google_sheet_url = "https://docs.google.com/spreadsheets/d/1DtM-hFIJwMt-AJ_VejNeUe0MNdOe73Txhg4q8nfOHSk/export?format=xlsx"
     sheet_name = "تقويم التدريب"
     
-    print(f"🔄 جاري سحب البيانات حياً من رابط Google Sheet...")
+    print(f"🔄 جاري سحب البيانات  من رابط Google Sheet...")
     
     try:
         # سحب الملف عبر الشبكة
@@ -464,7 +464,7 @@ def generate_interactive_calendar():
             border-bottom: 2px solid var(--bg-primary);
         }
 
-        /* كروت بوابة الأخصائي لتحديث البيانات حياً */
+        /* كروت بوابة الأخصائي لتحديث البيانات  */
         .specialist-cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
@@ -644,7 +644,7 @@ def generate_interactive_calendar():
         <div class="portal-nav-tabs">
             <button class="portal-tab-btn active" id="btn-tab-dashboard" onclick="switchPortalTab('panel-dashboard')"><i class="fa-solid fa-chart-line"></i> لوحة المؤشرات والميزانيات </button>
             <button class="portal-tab-btn" id="btn-tab-readiness" onclick="switchPortalTab('panel-readiness')"><i class="fa-solid fa-layer-group"></i> لوحة الجاهزية العامة للحقائب التدريبية</button>
-            <button class="portal-tab-btn" id="btn-tab-live" onclick="switchPortalTab('panel-live')"><i class="fa-solid fa-user-check"></i> بوابة تحديث البيانات حياً للأخصائيين</button>
+            <button class="portal-tab-btn" id="btn-tab-live" onclick="switchPortalTab('panel-live')"><i class="fa-solid fa-user-check"></i> بوابة تحديث البيانات  للأخصائيين</button>
         </div>
 
         <div id="panel-dashboard" class="portal-view-panel active">
@@ -848,7 +848,7 @@ def generate_interactive_calendar():
 
             <div class="section-box" style="margin-top:15px;">
                 <label style="font-weight:700; font-size:14px; display:block; margin-bottom:6px;">🔍 بحث سريع باسم البرنامج للوصول الفوري لبيانات الحقيبة التدريبية المكلف بها:</label>
-                <input type="text" id="live-portal-search" oninput="renderSpecialistLivePortal()" placeholder="اكتب اسم البرنامج التدريبي المراد تحديثه حياً..." style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px; outline:none; font-size:14px;">
+                <input type="text" id="live-portal-search" oninput="renderSpecialistLivePortal()" placeholder="اكتب اسم البرنامج التدريبي المراد تحديثه ..." style="width:100%; padding:12px; border:1px solid var(--border-color); border-radius:8px; outline:none; font-size:14px;">
             </div>
 
             <div class="specialist-cards-grid" id="live-cards-container"></div>
@@ -1152,7 +1152,7 @@ def generate_interactive_calendar():
             else gaugeBox.style.backgroundColor = 'var(--success-green)';
         }
 
-        // --- بناء بوابة الأخصائيين وتحديث البيانات التشاركية حياً ---
+        // --- بناء بوابة الأخصائيين وتحديث البيانات التشاركية  ---
         function renderSpecialistLivePortal() {
             const container = document.getElementById('live-cards-container');
             const searchKeyword = document.getElementById('live-portal-search').value.trim().toLowerCase();
@@ -1235,7 +1235,7 @@ def generate_interactive_calendar():
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(final_html)
         
-    print(f"\n✨ نجاح التطوير الهيكلي الموحد! تم إضافة 'لوحة الجاهزية العامة للحقائب' و 'بوابة تحديث البيانات حياً' بنجاح في ملف 'index.html'.")
+    print(f"\n✨ نجاح التطوير الهيكلي الموحد! تم إضافة 'لوحة الجاهزية العامة للحقائب' و 'بوابة تحديث البيانات ' بنجاح في ملف 'index.html'.")
 
 if __name__ == "__main__":
     generate_interactive_calendar()
